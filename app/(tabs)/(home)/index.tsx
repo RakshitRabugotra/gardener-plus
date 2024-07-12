@@ -6,6 +6,7 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
+  Button,
 } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -36,6 +37,8 @@ export default function HomeScreen() {
       </ThemedView>
       {/* The search section */}
       <PlantSearchView />
+      {/* Go the dynamic route - for dev only */}
+      <Button title='goto [plant]' onPress={() => router.push('/1')} />
     </ThemedView>
   )
 }

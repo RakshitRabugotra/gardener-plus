@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system'
 // Type definitions
 import type { GenerativeModel } from '@google/generative-ai'
 import type { CameraCapturedPicture } from 'expo-camera'
-import type { PlantCare } from '@/types/plants'
+import { PlantCareConditions } from '@/types/plants'
 
 // Environment Variables
 const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY!
@@ -55,42 +55,37 @@ export async function getPlantFromImage({
 /***
  * Gives the plantation conditions for a plant, based on it's name
  */
-export async function getPlantationConditions({
-  plantScientificName,
-}: {
+export async function getPlantationConditions(
   plantScientificName: string | null
-}) {
-  if (!plantScientificName) return ''
+) {
+  if (!plantScientificName) return null
 
   const prompt = `
   What are the required plantation conditions with small descriptions for '${plantScientificName}' using this JSON schema: 
   {
-  "sunlight": {
-      description: string;
-      hours: string; (in hrs)
-  },
-  "soilType": {
-      description: string;
-      ph: string; (in pH)
-
-  },
-  "seasonName": 'summer' or 'spring' or 'fall' or 'winters'
-  "temperatures": {
-      description: string;
-      temperature: string; (in degrees celsius)
-  },
-  "avgHeight": {
-      description: string;
-      height: string; (in m)
-  },
-  "placement": 'indoor' or 'outdoor' or 'both';
-  "fertilizer": string;
+  sunlight_description: string,
+  sunlight_hours_min: number,
+  sunlight_hours_max: number,
+  soil_description: string,
+  soil_ph_min: number,
+  soil_ph_max: number,
+  season: 'spring' | 'summer' | 'monsoon' | 'fall' | 'winter',
+  temperature_description: string,
+  temperature_min: number,
+  temperature_max: number,
+  temperature_unit: "°C",
+  average_height_description: string,
+  average_height_min: number,
+  average_height_max: number,
+  average_height_unit: "meters" | "centimeters" | "millimeters",
+  placement: 'indoor' | 'outdoor' | 'both',
+  fertilizer: string,
   }
   `
   const result = await textModel.generateContent(prompt as string)
   const response = result.response
   const text = response.text()
-  return text
+  return JSON.parse(text) as PlantCareConditions
 }
 
 /*

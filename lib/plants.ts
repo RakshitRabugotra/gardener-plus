@@ -8,11 +8,13 @@ const API_KEY = process.env.EXPO_PUBLIC_PERENUAL_API_KEY
 // To search for a particular plant
 export const getPlantList = async (plantName: string) => {
   // Send a HTTP request
+  console.log('Sending request...')
   const response = await fetch(
     `${BASE_URL}/api/species-list?key=${API_KEY}&page=1&q=${plantName}`
   )
   // Get the response and return it
   const json = await response.json()
+  console.log('Fetched results...\n', json)
   return json as PlantList
 }
 
@@ -34,7 +36,14 @@ export const getPlantFromID = async (id: number) => {
     `${BASE_URL}/api/species/details/${id}?key=${API_KEY}`
   )
   const data = await resp.json()
-  console.log('fetched the items from the api...')
+  console.log('fetched the items from the api...', data)
+
+  // Check if we've exceeded the API limit
+  if (typeof data['X-Response'] !== 'undefined') {
+    // we have successfully exceeded the API limit, return null
+    return null
+  }
+  // Else, we're good to go with the data
   return data as PlantFromID
   // }
 

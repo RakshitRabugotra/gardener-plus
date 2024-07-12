@@ -120,13 +120,13 @@ export interface PlantFromID {
 /**
  * Custom structure to store the plant care in gemini
  */
-export interface PlantCare {
+export interface PlantCareConditions {
   sunlight_description: string
   sunlight_hours_min: number
   sunlight_hours_max: number
   soil_description: string
   soil_ph_min: number
-  solid_ph_max: number
+  soil_ph_max: number
   season: 'spring' | 'summer' | 'monsoon' | 'fall' | 'winter'
   temperature_description: string
   temperature_min: number
