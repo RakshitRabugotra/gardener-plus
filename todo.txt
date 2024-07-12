@@ -1,0 +1,1 @@
+Add capabilities to get guide from the api
