@@ -7,7 +7,7 @@ export type ThemedViewProps = ViewProps & {
   darkColor?: string
 }
 
-export function ScrollThemedView({
+export function ThemedScrollView({
   style,
   lightColor,
   darkColor,

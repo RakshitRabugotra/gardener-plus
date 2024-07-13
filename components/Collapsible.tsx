@@ -1,20 +1,26 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { PropsWithChildren, useState } from 'react'
-import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native'
+import { useState } from 'react'
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
 import { Colors } from '@/constants/Colors'
+import { ViewProps } from 'react-native'
 
 export function Collapsible({
   children,
+  style,
   title,
-}: PropsWithChildren & { title: string }) {
+}: ViewProps & { title: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const theme = useColorScheme() ?? 'light'
 
   return (
-    <ThemedView>
+    <View style={style}>
       <TouchableOpacity
         style={styles.heading}
         onPress={() => setIsOpen((value) => !value)}
@@ -25,10 +31,10 @@ export function Collapsible({
           size={18}
           color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
         />
-        <ThemedText type='defaultSemiBold'>{title}</ThemedText>
+        <ThemedText style={styles.title}>{title}</ThemedText>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
-    </ThemedView>
+      {isOpen && <View style={styles.content}>{children}</View>}
+    </View>
   )
 }
 
@@ -38,8 +44,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
+  title: {
+    fontSize: 18,
+    fontFamily: 'SpaceMono',
+  },
   content: {
     marginTop: 6,
     marginLeft: 24,
+    paddingBottom: 6,
+    borderBottomWidth: 2,
   },
 })

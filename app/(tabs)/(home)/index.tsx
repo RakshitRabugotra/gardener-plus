@@ -16,7 +16,7 @@ import { ThemedView } from '@/components/ThemedView'
 import PlantSearchBar from '@/components/PlantSearchBar'
 import { useState } from 'react'
 import { PlantOverview } from '@/types/plants'
-import { ScrollThemedView } from '@/components/ScrollThemedView'
+import { ThemedScrollView } from '@/components/ThemedScrollView'
 import { router } from 'expo-router'
 
 export default function HomeScreen() {
@@ -50,10 +50,10 @@ function PlantSearchView() {
     <ThemedView>
       {/* Search Form */}
       <PlantSearchBar setPlants={setPlants} />
-      <ScrollThemedView>
+      <ThemedScrollView>
         {plants &&
           plants.map((plant, index) => <PlantCard {...plant} key={index} />)}
-      </ScrollThemedView>
+      </ThemedScrollView>
     </ThemedView>
   )
 }
