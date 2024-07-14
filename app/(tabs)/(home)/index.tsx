@@ -7,6 +7,8 @@ import {
   Dimensions,
   TouchableOpacity,
   Button,
+  View,
+  FlatList,
 } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -14,7 +16,7 @@ import { ThemedView } from '@/components/ThemedView'
 
 // Internal Dependencies
 import PlantSearchBar from '@/components/PlantSearchBar'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PlantOverview } from '@/types/plants'
 import { ThemedScrollView } from '@/components/ThemedScrollView'
 import { router } from 'expo-router'
@@ -45,15 +47,25 @@ export default function HomeScreen() {
 
 function PlantSearchView() {
   const [plants, setPlants] = useState<PlantOverview[] | null>(null)
+  const [refresh, setRefresh] = useState<number>(0)
 
   return (
-    <ThemedView>
+    <ThemedView style={styles.plantSearchContainer}>
       {/* Search Form */}
-      <PlantSearchBar setPlants={setPlants} />
-      <ThemedScrollView>
-        {plants &&
-          plants.map((plant, index) => <PlantCard {...plant} key={index} />)}
-      </ThemedScrollView>
+      <PlantSearchBar refresh={refresh} setPlants={setPlants} />
+      {plants && (
+        <FlatList
+          data={plants}
+          renderItem={({ item }) => <PlantCard {...item} />}
+          keyExtractor={(item) => item.id.toString()}
+          ListEmptyComponent={() => <ThemedText>No result found...</ThemedText>}
+          ListFooterComponent={() => <View style={{ paddingBottom: 216 }} />}
+          onRefresh={() => setRefresh((prev) => ++prev)}
+          //if set to true, the UI will show a loading indicator
+          refreshing={false}
+          style={{ marginVertical: 12 }}
+        />
+      )}
     </ThemedView>
   )
 }
@@ -64,24 +76,36 @@ function PlantCard({
   scientific_name,
   default_image,
 }: PlantOverview) {
-  console.log('Image: ', default_image)
+  const hasThumbnail = useMemo(
+    () =>
+      default_image &&
+      !default_image.thumbnail?.toLowerCase().includes('upgrade'),
+    [default_image]
+  )
 
   return (
-    <TouchableOpacity onPress={() => router.push(`/${id}`)}>
-      {default_image &&
-        default_image.thumbnail?.endsWith('update_access.jpg') && (
-          <Image
-            style={{
-              width: Dimensions.get('window').width,
-              aspectRatio: 1,
-            }}
-            source={{
-              uri: default_image.thumbnail,
-            }}
-          />
-        )}
-      <ThemedText type='title'>{common_name}</ThemedText>
-      <ThemedText type='subtitle'>{scientific_name}</ThemedText>
+    <TouchableOpacity
+      onPress={() => router.push(`/${id}`)}
+      style={styles.plantCard}
+    >
+      <View style={styles.plantImageContainer}>
+        <Image
+          style={styles.plantImage}
+          source={
+            hasThumbnail
+              ? {
+                  uri: default_image.thumbnail,
+                }
+              : require('@/assets/images/splash-logo.png')
+          }
+        />
+      </View>
+      <View style={styles.plantNameContainer}>
+        <ThemedText style={styles.plantName}>{common_name}</ThemedText>
+        <ThemedText style={styles.plantScientificName}>
+          {scientific_name}
+        </ThemedText>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -89,24 +113,47 @@ function PlantCard({
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    padding: 32,
+    paddingVertical: 32,
     gap: 16,
     overflow: 'hidden',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
   },
   headingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 16,
     gap: 8,
     paddingVertical: 8,
   },
-  stepContainer: {
+  plantCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
-    marginBottom: 8,
+    marginVertical: 12,
+  },
+  plantImage: {
+    width: 64,
+    height: 64,
+    backgroundColor: 'black',
+    objectFit: 'cover',
+    borderRadius: 12,
+  },
+  plantImageContainer: {
+    width: '20%',
+  },
+  plantName: {
+    textTransform: 'capitalize',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  plantNameContainer: {
+    flexGrow: 1,
+  },
+  plantSearchContainer: {
+    paddingHorizontal: 16,
+  },
+  plantScientificName: {
+    fontSize: 16,
+    fontFamily: 'Display',
   },
   reactLogo: {
     height: 178,
@@ -114,5 +161,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
 })

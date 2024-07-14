@@ -6,12 +6,14 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 
 // Internal Dependencies
 import { ThemedView } from './ThemedView'
-import { PlantList, PlantOverview } from '@/types/plants'
+import { PlantOverview } from '@/types/plants'
 import { getPlantList } from '@/lib/plants'
 
 export default function PlantSearchBar({
   setPlants,
+  refresh,
 }: {
+  refresh: number
   setPlants: React.Dispatch<React.SetStateAction<PlantOverview[] | null>>
 }) {
   // The plant to search duh!
@@ -20,6 +22,10 @@ export default function PlantSearchBar({
   const getMatchingPlants = async () => {
     getPlantList(plantToSearch).then((value) => setPlants(value.data))
   }
+  // If we're asked to refresh, then refresh
+  useEffect(() => {
+    getMatchingPlants()
+  }, [refresh])
 
   return (
     <ThemedView style={styles.container}>
