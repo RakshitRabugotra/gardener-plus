@@ -10,12 +10,16 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# ignore the todos
+todo.txt
+
 # environment variables
 .env**
 !.env.example
 
 # ignore dev files
 **assets/dev
+
 
 # macOS
 .DS_Store

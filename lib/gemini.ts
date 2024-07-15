@@ -85,6 +85,7 @@ export async function getPlantationConditions(
   const result = await textModel.generateContent(prompt as string)
   const response = result.response
   const text = response.text()
+
   return JSON.parse(text) as PlantCareConditions
 }
 

@@ -20,11 +20,11 @@ For testing and development
 import { getPlantFromID } from '@/lib/plants'
 import { getPlantationConditions } from '@/lib/plants'
 import { useThemeColor } from '@/hooks/useThemeColor'
+import { capitalize, checkThumbnail } from '@/lib/util'
 import { Colors } from '@/constants/Colors'
 
 // Type definitions
 import { PlantCareConditions, PlantFromID } from '@/types/plants'
-import { capitalize } from '@/lib/util'
 
 type Plant = PlantFromID | null
 type CareConditions = PlantCareConditions | null
@@ -168,7 +168,7 @@ function PlantInfoEssentials({ plantConditions, plant }: Props) {
   if (!plant || !plantConditions) return <View></View>
 
   const hasThumbnail = useMemo(
-    () => !plant.default_image.thumbnail.toLowerCase().includes('upgrade'),
+    () => checkThumbnail(plant.default_image.thumbnail),
     [plant]
   )
 
@@ -212,7 +212,7 @@ function PlantInfoEssentials({ plantConditions, plant }: Props) {
       {/* The care level for the plant */}
       <View style={styles.subSection}>
         <ThemedText style={styles.subTitle}>{'Care level'}</ThemedText>
-        <ThemedLabel>{plant.care_level}</ThemedLabel>
+        <ThemedLabel>{plant.care_level || 'Unknown'}</ThemedLabel>
       </View>
 
       {/* Where is it from (native) */}
@@ -273,7 +273,11 @@ function PlantInfoFAQ({ plant }: { plant: Plant }) {
       check: plant.flowers,
       response: {
         ...response,
-        yes: `Yes! of ${plant.flower_color} in ${plant.flowering_season} season`,
+        yes: `Yes! ${
+          plant.flower_color && 'of ' + plant.flower_color + ' color'
+        } ${
+          plant.flowering_season && 'in ' + plant.flowering_season + ' season'
+        }`,
       },
     },
     {
@@ -281,7 +285,7 @@ function PlantInfoFAQ({ plant }: { plant: Plant }) {
       check: plant.fruits,
       response: {
         ...response,
-        yes: `Yes! of ${plant.fruit_color}`,
+        yes: `Yes! ${plant.fruit_color && 'of ' + plant.fruit_color} color`,
       },
     },
     {

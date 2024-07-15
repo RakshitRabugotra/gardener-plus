@@ -15,3 +15,9 @@ export const capitalize = (str: string, lower = false) =>
   (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, (match) =>
     match.toUpperCase()
   )
+
+
+/**
+ * Checks if the given url is usable to parse images
+ */
+export const checkThumbnail = (thumbnail: string) => !thumbnail.toLowerCase().includes('upgrade')

@@ -18,8 +18,8 @@ import { ThemedView } from '@/components/ThemedView'
 import PlantSearchBar from '@/components/PlantSearchBar'
 import { useMemo, useState } from 'react'
 import { PlantOverview } from '@/types/plants'
-import { ThemedScrollView } from '@/components/ThemedScrollView'
 import { router } from 'expo-router'
+import { checkThumbnail } from '@/lib/util'
 
 export default function HomeScreen() {
   // Get the insets of the safe area in view
@@ -77,9 +77,7 @@ function PlantCard({
   default_image,
 }: PlantOverview) {
   const hasThumbnail = useMemo(
-    () =>
-      default_image &&
-      !default_image.thumbnail?.toLowerCase().includes('upgrade'),
+    () => default_image && checkThumbnail(default_image.thumbnail),
     [default_image]
   )
 

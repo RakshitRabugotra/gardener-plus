@@ -3,6 +3,7 @@ import { PlantCareConditions, PlantFromID, PlantList } from '@/types/plants'
 import { getPlantationConditions as plantationConditions } from './gemini'
 import { supabase } from './supabase'
 import { Tables } from '@/types/supabase'
+import { checkThumbnail } from './util'
 
 // Environment Variables
 const BASE_URL = process.env.EXPO_PUBLIC_PERENUAL_BASE_URL
