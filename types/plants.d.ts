@@ -20,7 +20,7 @@ export interface PlantOverview {
   id: number
   common_name: string
   scientific_name: string[]
-  other_name: string[] | unknown[]
+  other_name: string[]
   cycle: 'Annual' | 'Biennial' | 'Perennial' | string
   watering: string
   sunlight: []
@@ -47,7 +47,7 @@ export interface PlantFromID {
   id: number
   common_name: string
   scientific_name: string[]
-  other_name: string[] | unknown[]
+  other_name: string[]
   family: string | null
   origin: string[]
   type: string
@@ -59,52 +59,29 @@ export interface PlantFromID {
     unit: 'feet' | string
   }
   cycle: 'Annual' | 'Biennial' | 'Perennial' | string
-  attracts: string | unknown[]
-  propagation: string[] | unknown[]
-  hardiness: {
-    min: string
-    max: string
-  }
-  hardiness_location: {
-    full_url: string
-    full_iframe: string
-  }
+  attracts: string[]
+  propagation: string[]
   watering: string
-  depth_water_requirement: unknown[]
-  volume_water_requirement: unknown[]
-  watering_period: unknown | null
-  watering_general_benchmark: {
-    value: string
-    unit: 'days' | string
-  }
-  plant_anatomy: unknown[]
+  watering_period: string | null
+  plant_anatomy: string[]
   sunlight: string[]
   pruning_month: string[]
-  pruning_count: unknown[]
+  pruning_count: string
   seeds: number
-  maintenance: unknown | null
-  'care-guides': string
-  soil: unknown[]
-  growth_rate: 'High' | string
-  drought_tolerant: boolean
-  salt_tolerant: boolean
+  maintenance: string | null
   thorny: boolean
   invasive: boolean
   tropical: boolean
   indoor: boolean
   care_level: 'Medium' | string
-  pest_susceptibility: unknown[]
-  pest_susceptibility_api: 'Coming Soon' | string
   flowers: boolean
-  flowering_season: unknown | null
+  flowering_season: string | null
   flower_color: string
   cones: boolean
   fruits: boolean
   edible_fruit: boolean
-  edible_fruit_taste_profile: 'Coming Soon' | string
-  fruit_nutritional_value: 'Coming Soon' | string
-  fruit_color: []
-  harvest_season: unknown | null
+  fruit_color: string | null
+  harvest_season: string | null
   leaf: boolean
   leaf_color: string[]
   edible_leaf: boolean
@@ -114,7 +91,6 @@ export interface PlantFromID {
   poisonous_to_pets: number
   description: string
   default_image: PlantImage
-  other_images: string
 }
 
 /**

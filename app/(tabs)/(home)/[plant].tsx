@@ -18,19 +18,28 @@ For testing and development
 
 // Custom utilities
 import { getPlantFromID } from '@/lib/plants'
-import { getPlantationConditions } from '@/lib/gemini'
+import { getPlantationConditions } from '@/lib/plants'
 import { useThemeColor } from '@/hooks/useThemeColor'
 import { Colors } from '@/constants/Colors'
 
 // Type definitions
 import { PlantCareConditions, PlantFromID } from '@/types/plants'
+import { capitalize } from '@/lib/util'
+
+type Plant = PlantFromID | null
+type CareConditions = PlantCareConditions | null
+
+interface Props {
+  plant: Plant
+  plantConditions: CareConditions
+}
 
 export default function PlantInfo() {
   // The plant id from the query parameter
   const { plant: id } = useLocalSearchParams()
 
   // The state variables for plant info
-  const [plant, setPlant] = useState<PlantFromID | null>(
+  const [plant, setPlant] = useState<Plant>(
     null
     /*
     For development
@@ -38,8 +47,7 @@ export default function PlantInfo() {
     // dummyPlant as PlantFromID
   )
   // and for plantation conditions
-  const [plantConditions, setPlantConditions] =
-    useState<PlantCareConditions | null>(null)
+  const [plantConditions, setPlantConditions] = useState<CareConditions>(null)
 
   useEffect(() => {
     // Get the plants on change of 'id'
@@ -50,16 +58,17 @@ export default function PlantInfo() {
 
   useEffect(() => {
     // Get the conditions for plant growth from Gemini
-    getPlantationConditions(plant ? plant.scientific_name[0] : null).then(
-      (value) => setPlantConditions(value)
-    )
+    getPlantationConditions(
+      plant ? plant.id : null,
+      plant && plant.scientific_name ? plant.scientific_name[0] : null
+    ).then((value) => setPlantConditions(value))
   }, [plant])
 
   return (
     <ThemedScrollView>
       <Stack.Screen
         options={{
-          title: plant ? plant.common_name : 'The Plant',
+          title: plant ? capitalize(plant.common_name) : 'The Plant',
         }}
       />
       {/* The four essentials from the care description */}
@@ -74,34 +83,32 @@ export default function PlantInfo() {
   )
 }
 
-function PlantInfoHero({
-  plantConditions,
-  plant,
-}: {
-  plantConditions: PlantCareConditions | null
-  plant: PlantFromID | null
-}) {
+function PlantInfoHero({ plantConditions, plant }: Props) {
   return (
     <ThemedView style={styles.attributeContainer}>
       <RangedAttributeInfoCard
+        icon='cloud-sun'
         name={plantConditions ? 'sunlight' : null}
         min={plantConditions?.sunlight_hours_min}
         max={plantConditions?.sunlight_hours_max}
         units={'hrs'}
       />
       <RangedAttributeInfoCard
+        icon='temperature-half'
         name={plantConditions ? 'temperature' : null}
         min={plantConditions?.temperature_min}
         max={plantConditions?.temperature_max}
         units={plantConditions?.temperature_unit}
       />
       <RangedAttributeInfoCard
+        icon='circle-half-stroke'
         name={plantConditions ? 'soil' : null}
         min={plantConditions?.soil_ph_min}
         max={plantConditions?.soil_ph_max}
         units='pH'
       />
       <RangedAttributeInfoCard
+        icon='plant-wilt'
         name={plant?.dimensions ? plant.dimensions.type : null}
         min={plant?.dimensions.min_value}
         max={plant?.dimensions.min_value}
@@ -113,11 +120,13 @@ function PlantInfoHero({
 
 function RangedAttributeInfoCard({
   name,
+  icon,
   units = '',
   min = 0,
   max = 0,
 }: {
   name: string | null
+  icon: string
   min?: number
   max?: number
   units?: string
@@ -135,7 +144,7 @@ function RangedAttributeInfoCard({
       ]}
     >
       <ThemedText style={[styles.icon, { backgroundColor: tintColor }]}>
-        <Icon name='plant-wilt' size={24} color='black' />
+        <Icon name={icon} size={24} color='black' />
       </ThemedText>
       <View style={styles.statContainer}>
         <Text
@@ -154,13 +163,7 @@ function RangedAttributeInfoCard({
   )
 }
 
-function PlantInfoEssentials({
-  plantConditions,
-  plant,
-}: {
-  plantConditions: PlantCareConditions | null
-  plant: PlantFromID | null
-}) {
+function PlantInfoEssentials({ plantConditions, plant }: Props) {
   // If we're unable to get the essentials, due to api limit exceeding
   if (!plant || !plantConditions) return <View></View>
 
@@ -241,7 +244,9 @@ function PlantInfoEssentials({
   )
 }
 
-function PlantInfoFAQ({ plant }: { plant: PlantFromID }) {
+function PlantInfoFAQ({ plant }: { plant: Plant }) {
+  if (!plant) return <View />
+
   const colorScheme = useColorScheme()
 
   /**
