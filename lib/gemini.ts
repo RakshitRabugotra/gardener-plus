@@ -56,7 +56,7 @@ export async function getPlantFromImage({
  * Gives the plantation conditions for a plant, based on it's name
  */
 export async function getPlantationConditions(
-  plantScientificName: string | null,
+  plantScientificName: string | null
 ) {
   if (!plantScientificName) return null
 

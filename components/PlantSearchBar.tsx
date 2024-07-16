@@ -21,7 +21,7 @@ export default function PlantSearchBar({
   // will fetch the plant once it's done editing
   const getMatchingPlants = async () => {
     getPlantList(plantToSearch).then((value) =>
-      value ? setPlants(value.data) : null,
+      value ? setPlants(value.data) : null
     )
   }
   // If we're asked to refresh, then refresh
