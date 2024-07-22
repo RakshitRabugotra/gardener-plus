@@ -115,3 +115,11 @@ export interface PlantCareConditions {
   placement: 'indoor' | 'outdoor' | 'both'
   fertilizer: string
 }
+
+/**
+ * Custom structure to check whether the given image contains a plant
+ */
+export interface PlantDescription {
+  isPlant: boolean
+  plantScientificName: string | null
+}

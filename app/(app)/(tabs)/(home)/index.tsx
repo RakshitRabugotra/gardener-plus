@@ -12,19 +12,23 @@ import { ThemedView } from '@/components/ThemedView'
 
 // Internal Dependencies
 import PlantSearchBar from '@/components/PlantSearchBar'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PlantOverview } from '@/types/plants'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { checkThumbnail } from '@/lib/util'
 import useSession from '@/hooks/useSession'
 import { Pressable } from 'react-native'
 import { signOut } from '@/actions/auth'
+import { getPlantList } from '@/lib/plants'
 
 export default function HomeScreen() {
   // Get the insets of the safe area in view
   const insets = useSafeAreaInsets()
   // Get the current logged-in user
   const { session, signOut } = useSession()
+
+  // Use the local search params to get the name of the plant if any
+  const local = useLocalSearchParams()
 
   return (
     <ThemedView style={[styles.content, { paddingTop: insets.top }]}>
@@ -44,16 +48,30 @@ export default function HomeScreen() {
         </ThemedView>
       </ThemedView>
       {/* The search section */}
-      <PlantSearchView />
+      <PlantSearchView paramPlant={local.name as string} />
       {/* Go the dynamic route - for dev only */}
       {/* <Button title='goto [plant]' onPress={() => router.push('/1')} /> */}
     </ThemedView>
   )
 }
 
-function PlantSearchView() {
+function PlantSearchView({ paramPlant }: { paramPlant: string }) {
   const [plants, setPlants] = useState<PlantOverview[] | null>(null)
   const [refresh, setRefresh] = useState<number>(0)
+
+  // Get the matching plants with the given name
+  const getMatchingPlants = async () => {
+    getPlantList(paramPlant).then((value) =>
+      value ? setPlants(value.data) : null
+    )
+  }
+
+  useEffect(() => {
+    if (!paramPlant) return
+    if (typeof paramPlant === 'undefined') return
+    // Else, search the plant
+    getMatchingPlants()
+  }, [paramPlant])
 
   return (
     <ThemedView style={styles.plantSearchContainer}>

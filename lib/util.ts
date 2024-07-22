@@ -20,4 +20,4 @@ export const capitalize = (str: string, lower = false) =>
  * Checks if the given url is usable to parse images
  */
 export const checkThumbnail = (thumbnail: string) =>
-  !thumbnail.toLowerCase().includes('upgrade')
+  thumbnail && !thumbnail.toLowerCase().includes('upgrade')
