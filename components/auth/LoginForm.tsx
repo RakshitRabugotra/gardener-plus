@@ -6,7 +6,7 @@ import { signInWithEmail } from '@/actions/auth'
 
 // Internal dependencies
 import ThemedTextInput from '@/components/form/ThemedTextInput'
-import ThemedButton from '@/components/form/ThemedButton'
+import { ThemedButton } from '@/components/form/ThemedButton'
 
 // Custom animated components
 import { TranslateInView } from '@/anim/TranslateInView'

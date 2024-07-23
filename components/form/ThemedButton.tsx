@@ -2,7 +2,7 @@ import { useThemeColor } from '@/hooks/useThemeColor'
 import { Pressable, PressableProps, Text } from 'react-native'
 import { useColorScheme } from 'react-native'
 
-export default function ThemedButton({
+export function ThemedButton({
   title,
   disabled,
   ...rest

@@ -18,14 +18,13 @@ import Camera from '@/components/Camera'
 import type { CameraCapturedPicture, CameraView } from 'expo-camera'
 
 // Icon Dependencies
-import Icon from 'react-native-vector-icons/Ionicons'
 import { getPlantFromImage } from '@/lib/gemini'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { PlantDescription } from '@/types/plants'
-import ThemedButton from '@/components/form/ThemedButton'
+import { ThemedButton } from '@/components/form/ThemedButton'
 
 // import SearchBar from '@components/SearchBar'
 // import { getPlantFromImage } from '@lib/gemini'

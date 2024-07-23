@@ -6,7 +6,7 @@ import { signUpWithEmail } from '@/actions/auth'
 
 // Internal Dependencies
 import ThemedTextInput from '@/components/form/ThemedTextInput'
-import ThemedButton from '@/components/form/ThemedButton'
+import { ThemedButton } from '@/components/form/ThemedButton'
 import { TranslateInView } from '@/anim/TranslateInView'
 import { router } from 'expo-router'
 

@@ -40,12 +40,7 @@ export default function HomeScreen() {
             {session?.user.user_metadata.first_name}
           </ThemedText>
         </ThemedText>
-        {/* TODO: The notification bell */}
-        <ThemedView>
-          <Pressable onPress={() => signOut()}>
-            <ThemedText>Logout</ThemedText>
-          </Pressable>
-        </ThemedView>
+        <ThemedView>{/* TODO: The notification bell */}</ThemedView>
       </ThemedView>
       {/* The search section */}
       <PlantSearchView paramPlant={local.name as string} />
