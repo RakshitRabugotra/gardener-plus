@@ -41,6 +41,12 @@ export const getPlantFromID = async (id: number) => {
     const resp = await fetch(
       `${BASE_URL}/api/species/details/${id}?key=${API_KEY}`
     )
+
+    if (!resp.ok) {
+      // We're being asked to upgrade the API pricing
+      return null
+    }
+
     const data = await resp.json()
     // Check if we've exceeded the API limit
     if (typeof data['X-Response'] !== 'undefined') {
@@ -116,6 +122,7 @@ export const getPlantFromID = async (id: number) => {
     console.error('error while fetching plant', error, { plant })
     return null
   }
+
   // Else, return the fetched plant, with no errors
   return {
     ...plant,
@@ -168,4 +175,67 @@ export const getPlantationConditions = async (
 
   // Else, return the data from the supabase
   return data as PlantCareConditions
+}
+
+/**
+ * Is the plant liked by the user?
+ */
+export const isPlantFavourite = async (plant_id: number, user_id: string) => {
+  const { data, error } = await supabase
+    .from('favourite_plants')
+    .select()
+    .eq('plant_id', plant_id)
+    .eq('user_id', user_id)
+
+  if (!data || error) return false
+
+  return data.length !== 0
+}
+
+/**
+ * Get all the favourite plants of the user
+ */
+export const getFavouritePlants = async (user_id: string) => {
+  const { data, error } = await supabase
+    .from('favourite_plants')
+    .select(`plant_id, plants (*)`)
+    .eq('user_id', user_id)
+
+  if (error || !data) {
+    console.error('error while fetching favourite plants', { error })
+    return null
+  }
+  // Modify the data to show only the plants
+  return data.map((item) => item.plants) as Tables<'plants'>[]
+}
+
+/**
+ * Toggle the plant to favourite
+ */
+export const toggleFavourite = async (
+  plant_id: number,
+  user_id: string,
+  state: boolean
+) => {
+  // Means we have to add to the favourites
+  if (state) {
+    const { error } = await supabase.from('favourite_plants').upsert({
+      plant_id,
+      user_id,
+    })
+    // If there's any error, then show the error
+    if (error) console.error('error while adding to favourites', { error })
+    // If there was no error, then true, the plant is now a favourite
+    // Else, false it couldn't be updated
+    return new Boolean(!error).valueOf()
+  }
+
+  // Means we have to remove from the favourites
+  const { error } = await supabase
+    .from('favourite_plants')
+    .delete({ count: 'exact' })
+    .eq('plant_id', plant_id)
+  // If there was an error, then there's still no favourite,
+  // Else, update it to favourite
+  return new Boolean(error).valueOf()
 }

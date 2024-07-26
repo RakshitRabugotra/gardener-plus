@@ -17,6 +17,14 @@ export const capitalize = (str: string, lower = false) =>
   )
 
 /**
+ * Add ellipses
+ */
+export const addEllipses = (string: string, maxLength: number = 23) =>
+  string.length >= maxLength - 3
+    ? string.substring(0, maxLength - 3) + '...'
+    : string
+
+/**
  * Checks if the given url is usable to parse images
  */
 export const checkThumbnail = (thumbnail: string) =>

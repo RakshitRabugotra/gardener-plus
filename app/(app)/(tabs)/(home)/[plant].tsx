@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams } from 'expo-router'
-import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Image, View, StyleSheet, Text } from 'react-native'
 import { useColorScheme } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome6'
@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { ThemedScrollView } from '@/components/ThemedScrollView'
 import { Collapsible } from '@/components/Collapsible'
 import { ExternalLink } from '@/components/ExternalLink'
+import { ThemedLabel } from '@/components/ThemedLabel'
 
 /*
 For testing and development
@@ -20,11 +21,12 @@ For testing and development
 import { getPlantFromID } from '@/lib/plants'
 import { getPlantationConditions } from '@/lib/plants'
 import { useThemeColor } from '@/hooks/useThemeColor'
-import { capitalize, checkThumbnail } from '@/lib/util'
+import { addEllipses, capitalize, checkThumbnail } from '@/lib/util'
 import { Colors } from '@/constants/Colors'
 
 // Type definitions
 import { PlantCareConditions, PlantFromID } from '@/types/plants'
+import { AddFavourite } from '@/components/plants/Favourites'
 
 type Plant = PlantFromID | null
 type CareConditions = PlantCareConditions | null
@@ -40,7 +42,7 @@ export default function PlantInfo() {
 
   // The state variables for plant info
   const [plant, setPlant] = useState<Plant>(
-    null,
+    null
     /*
     For development
     */
@@ -60,7 +62,7 @@ export default function PlantInfo() {
     // Get the conditions for plant growth from Gemini
     getPlantationConditions(
       plant ? plant.id : null,
-      plant && plant.scientific_name ? plant.scientific_name[0] : null,
+      plant && plant.scientific_name ? plant.scientific_name[0] : null
     ).then((value) => setPlantConditions(value))
   }, [plant])
 
@@ -68,7 +70,10 @@ export default function PlantInfo() {
     <ThemedScrollView>
       <Stack.Screen
         options={{
-          title: plant ? capitalize(plant.common_name) : 'The Plant',
+          title: plant
+            ? addEllipses(capitalize(plant.common_name))
+            : 'The Plant',
+          headerRight: () => <AddFavourite plant={plant} />,
         }}
       />
       {/* The four essentials from the care description */}
@@ -169,7 +174,7 @@ function PlantInfoEssentials({ plantConditions, plant }: Props) {
 
   const hasThumbnail = useMemo(
     () => checkThumbnail(plant.default_image.thumbnail),
-    [plant],
+    [plant]
   )
 
   return (
@@ -343,35 +348,6 @@ function PlantInfoFAQ({ plant }: { plant: Plant }) {
   )
 }
 
-function ThemedLabel({
-  children,
-  mono = false,
-}: PropsWithChildren & {
-  mono?: boolean
-}) {
-  const colorScheme = useColorScheme()
-  const tintColor = useThemeColor({}, 'tint')
-
-  // Theme for the background
-  const background = mono
-    ? { light: '#000', dark: Colors.light.background }
-    : { light: tintColor, dark: tintColor }
-
-  return (
-    <ThemedText
-      style={[
-        styles.label,
-        {
-          color: '#000',
-          backgroundColor: background[colorScheme || 'light'],
-        },
-      ]}
-    >
-      {children}
-    </ThemedText>
-  )
-}
-
 const styles = StyleSheet.create({
   title: {
     fontSize: 32,
@@ -428,12 +404,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  label: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    fontFamily: 'SpaceMono',
   },
   stat: {
     fontSize: 16,

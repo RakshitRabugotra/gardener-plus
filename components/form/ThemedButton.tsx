@@ -1,12 +1,17 @@
 import { useThemeColor } from '@/hooks/useThemeColor'
+import { TextStyle } from 'react-native'
 import { Pressable, PressableProps, Text } from 'react-native'
 import { useColorScheme } from 'react-native'
 
 export function ThemedButton({
   title,
   disabled,
+  textStyles,
   ...rest
-}: Omit<PressableProps, 'style' | 'children'> & { title: string }) {
+}: Omit<PressableProps, 'style' | 'children'> & {
+  title: string
+  textStyles?: TextStyle
+}) {
   const colorScheme = useColorScheme()
   const tintColor = useThemeColor({}, 'tint')
   const textColor = useThemeColor({}, 'text')
@@ -34,6 +39,7 @@ export function ThemedButton({
           fontSize: 18,
           textAlign: 'center',
           fontWeight: 500,
+          ...textStyles,
         }}
       >
         {title}

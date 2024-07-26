@@ -23,6 +23,12 @@ export default function HomeLayout() {
       }}
     >
       <Stack.Screen name='index' options={{ headerShown: false }} />
+      <Stack.Screen
+        name='search'
+        options={{
+          headerTitle: 'Search a plant',
+        }}
+      />
     </Stack>
   )
 }

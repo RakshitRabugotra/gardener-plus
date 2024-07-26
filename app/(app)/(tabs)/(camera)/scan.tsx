@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native'
 
@@ -21,18 +23,17 @@ import type { CameraCapturedPicture, CameraView } from 'expo-camera'
 import { getPlantFromImage } from '@/lib/gemini'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { PlantDescription } from '@/types/plants'
 import { ThemedButton } from '@/components/form/ThemedButton'
+import { ThemedScrollView } from '@/components/ThemedScrollView'
+import { Colors } from '@/constants/Colors'
+import { useThemeColor } from '@/hooks/useThemeColor'
 
 // import SearchBar from '@components/SearchBar'
 // import { getPlantFromImage } from '@lib/gemini'
 
 export default function Scan() {
-  // Get the safe area insets
-  const insets = useSafeAreaInsets()
-
   // The picture taken by the camera
   const [picture, setPicture] = useState<CameraCapturedPicture>()
   const [pictureDesc, setPictureDesc] = useState<PlantDescription | null>(null)
@@ -77,17 +78,21 @@ export default function Scan() {
   }, [picture])
 
   return (
-    <ScrollView>
-      <ThemedView style={[styles.content, { paddingTop: insets.top }]}>
-        <Camera getPicture={getPicture} />
-      </ThemedView>
-      <ThemedView style={[styles.previewContainer, styles.pb128]}>
-        <ThemedText type='title' style={styles.heading}>
-          Preview
+    <ThemedScrollView overScrollMode='never' style={styles.container}>
+      <View style={styles.previewContainer}>
+        <ThemedText
+          type='title'
+          style={[styles.sectionHeading, styles.heading]}
+        >
+          Take a picture
         </ThemedText>
-        <PlantDescriptionPreview picture={picture} description={pictureDesc} />
-      </ThemedView>
-    </ScrollView>
+      </View>
+      <View style={styles.content}>
+        <Camera getPicture={getPicture} />
+      </View>
+
+      <PlantDescriptionPreview picture={picture} description={pictureDesc} />
+    </ThemedScrollView>
   )
 }
 
@@ -98,47 +103,71 @@ function PlantDescriptionPreview({
   picture?: CameraCapturedPicture
   description: PlantDescription | null
 }) {
+  // For color and themes
+  const tint = useThemeColor({}, 'tint')
+
   if (!picture || typeof picture === 'undefined') return
 
   // Else, return the option to search the plant
   return (
-    <ThemedView style={styles.previewContainer}>
-      <Image
-        source={{
-          uri: picture.uri,
-          width: Dimensions.get('window').width / 2,
-          height:
-            (Dimensions.get('window').height *
-              (picture.width / picture.height)) /
-            2,
-        }}
-      />
-      {!description ? (
-        <ThemedView>
-          <ThemedText>Loading</ThemedText>
-        </ThemedView>
-      ) : (
-        <>
-          {!description.isPlant ? (
-            <ThemedText>The image is not a plant... Try again</ThemedText>
-          ) : (
-            <>
-              <ThemedText>{description.plantScientificName}</ThemedText>
-              <ThemedButton
-                onPress={() =>
-                  router.push('?name=' + description.plantScientificName)
-                }
-                title='Goto plant'
-              />
-            </>
-          )}
-        </>
-      )}
-    </ThemedView>
+    <View style={[styles.previewContainer, styles.pb128]}>
+      <ThemedText type='title' style={styles.sectionHeading}>
+        Preview
+      </ThemedText>
+      <ThemedView style={styles.previewContainer}>
+        <Image
+          source={{
+            uri: picture.uri,
+            width: Dimensions.get('window').width / 2,
+            height:
+              (Dimensions.get('window').height *
+                (picture.width / picture.height)) /
+              2,
+          }}
+        />
+        {!description ? (
+          <ThemedView
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}
+          >
+            <ThemedText type='subtitle'>Identifying</ThemedText>
+            <ActivityIndicator size='large' color={tint} />
+          </ThemedView>
+        ) : (
+          <>
+            {!description.isPlant ? (
+              <View
+                style={{
+                  padding: 8,
+                  borderRadius: 12,
+                  backgroundColor: '#f69465',
+                }}
+              >
+                <ThemedText type='defaultSemiBold'>
+                  The image is not a plant... Try again
+                </ThemedText>
+              </View>
+            ) : (
+              <View style={{ flex: 1, gap: 16 }}>
+                <ThemedButton
+                  onPress={() =>
+                    router.push('?name=' + description.plantScientificName)
+                  }
+                  title={description.plantScientificName!}
+                  textStyles={styles.plantName}
+                />
+              </View>
+            )}
+          </>
+        )}
+      </ThemedView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    minHeight: Dimensions.get('screen').height,
+  },
   content: {
     flex: 1,
     width: '100%',
@@ -147,17 +176,24 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   heading: {
-    width: '100%',
-    fontFamily: 'SpaceMono',
-    textAlign: 'left',
+    fontFamily: 'Display',
   },
   pb128: {
     marginBottom: 128,
+  },
+  plantName: {
+    fontFamily: 'Display',
+    fontSize: 24,
   },
   previewContainer: {
     padding: 16,
     gap: 16,
     alignItems: 'center',
+  },
+  sectionHeading: {
+    width: '100%',
+    fontFamily: 'SpaceMono',
+    textAlign: 'left',
   },
 })
 

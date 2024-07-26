@@ -9,7 +9,7 @@ import { ThemedView } from './ThemedView'
 import { PlantOverview } from '@/types/plants'
 import { getPlantList } from '@/lib/plants'
 
-export default function PlantSearchBar({
+export function PlantSearchBar({
   setPlants,
   refresh,
 }: {
@@ -33,7 +33,7 @@ export default function PlantSearchBar({
     <ThemedView style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder='Search'
+        placeholder='Rosa Indica...'
         keyboardType='web-search'
         returnKeyLabel='search'
         returnKeyType='search'

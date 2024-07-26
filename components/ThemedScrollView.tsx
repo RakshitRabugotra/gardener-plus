@@ -1,4 +1,4 @@
-import { ScrollView, type ViewProps } from 'react-native'
+import { ScrollView, ScrollViewProps, type ViewProps } from 'react-native'
 
 import { useThemeColor } from '@/hooks/useThemeColor'
 
@@ -12,7 +12,7 @@ export function ThemedScrollView({
   lightColor,
   darkColor,
   ...otherProps
-}: ThemedViewProps) {
+}: ThemedViewProps & ScrollViewProps) {
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     'background'
