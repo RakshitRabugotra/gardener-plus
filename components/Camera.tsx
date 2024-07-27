@@ -74,7 +74,7 @@ export default function Camera({
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    borderRadius: 24,
+    borderBottomEndRadius: 24,
     overflow: 'hidden',
     width: '100%',
     aspectRatio: 3 / 4,

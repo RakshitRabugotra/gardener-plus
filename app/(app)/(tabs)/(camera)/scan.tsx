@@ -29,6 +29,7 @@ import { ThemedButton } from '@/components/form/ThemedButton'
 import { ThemedScrollView } from '@/components/ThemedScrollView'
 import { Colors } from '@/constants/Colors'
 import { useThemeColor } from '@/hooks/useThemeColor'
+import { Ionicons } from '@expo/vector-icons'
 
 // import SearchBar from '@components/SearchBar'
 // import { getPlantFromImage } from '@lib/gemini'
@@ -79,18 +80,9 @@ export default function Scan() {
 
   return (
     <ThemedScrollView overScrollMode='never' style={styles.container}>
-      <View style={styles.previewContainer}>
-        <ThemedText
-          type='title'
-          style={[styles.sectionHeading, styles.heading]}
-        >
-          Take a picture
-        </ThemedText>
-      </View>
       <View style={styles.content}>
         <Camera getPicture={getPicture} />
       </View>
-
       <PlantDescriptionPreview picture={picture} description={pictureDesc} />
     </ThemedScrollView>
   )
@@ -110,57 +102,75 @@ function PlantDescriptionPreview({
 
   // Else, return the option to search the plant
   return (
-    <View style={[styles.previewContainer, styles.pb128]}>
-      <ThemedText type='title' style={styles.sectionHeading}>
-        Preview
-      </ThemedText>
-      <ThemedView style={styles.previewContainer}>
+    <View style={[styles.previewContainer, { paddingBottom: 215 }]}>
+      <ThemedView style={[styles.previewContainer, { backgroundColor: tint }]}>
         <Image
           source={{
             uri: picture.uri,
-            width: Dimensions.get('window').width / 2,
-            height:
-              (Dimensions.get('window').height *
-                (picture.width / picture.height)) /
-              2,
+            width: Dimensions.get('window').width,
+          }}
+          style={{
+            width: '30%',
+            aspectRatio: 1,
+            borderRadius: 16,
           }}
         />
         {!description ? (
-          <ThemedView
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}
-          >
-            <ThemedText type='subtitle'>Identifying</ThemedText>
-            <ActivityIndicator size='large' color={tint} />
-          </ThemedView>
+          <View style={styles.initialView}>
+            <ThemedText type='subtitle' style={{ fontFamily: 'SpaceMono' }}>
+              Identifying
+            </ThemedText>
+            <ActivityIndicator size='large' color={'black'} />
+          </View>
         ) : (
           <>
             {!description.isPlant ? (
-              <View
-                style={{
-                  padding: 8,
-                  borderRadius: 12,
-                  backgroundColor: '#f69465',
-                }}
-              >
-                <ThemedText type='defaultSemiBold'>
-                  The image is not a plant... Try again
+              <View style={styles.initialView}>
+                <ThemedText type='subtitle' style={{ fontFamily: 'SpaceMono' }}>
+                  No plant found!
                 </ThemedText>
               </View>
             ) : (
-              <View style={{ flex: 1, gap: 16 }}>
-                <ThemedButton
-                  onPress={() =>
-                    router.push('?name=' + description.plantScientificName)
-                  }
-                  title={description.plantScientificName!}
-                  textStyles={styles.plantName}
+              <View
+                style={[
+                  styles.initialView,
+                  { justifyContent: 'space-between' },
+                ]}
+              >
+                <ThemedText style={styles.plantName}>
+                  {description.plantScientificName}
+                </ThemedText>
+                <GotoPlant
+                  href={'/search?name=' + description.plantScientificName}
                 />
+
+                {/* textStyles={styles.plantName} */}
               </View>
             )}
           </>
         )}
       </ThemedView>
     </View>
+  )
+}
+
+function GotoPlant({ href }: { href: string }) {
+  const tint = useThemeColor({}, 'tint')
+
+  return (
+    <TouchableOpacity
+      onPress={() => router.push(href)}
+      style={{
+        backgroundColor: 'black',
+        borderRadius: 16,
+        width: '30%',
+        alignSelf: 'stretch',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Ionicons name='arrow-forward' size={24} color={tint} />
+    </TouchableOpacity>
   )
 }
 
@@ -171,22 +181,36 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     width: '100%',
-    paddingVertical: 32,
+    justifyContent: 'space-between',
     gap: 16,
     overflow: 'hidden',
   },
   heading: {
     fontFamily: 'Display',
   },
-  pb128: {
-    marginBottom: 128,
+  imageContainer: {
+    width: '40%',
+    aspectRatio: 1,
+    objectFit: 'cover',
+    backgroundColor: 'black',
+  },
+  initialView: {
+    flex: 1,
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
   plantName: {
     fontFamily: 'Display',
     fontSize: 24,
   },
   previewContainer: {
-    padding: 16,
+    borderRadius: 24,
+    flex: 1,
+    flexDirection: 'row',
+    padding: 12,
     gap: 16,
     alignItems: 'center',
   },

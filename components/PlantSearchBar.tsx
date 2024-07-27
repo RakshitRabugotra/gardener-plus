@@ -12,15 +12,19 @@ import { getPlantList } from '@/lib/plants'
 export function PlantSearchBar({
   setPlants,
   refresh,
+  defaultSearch,
 }: {
-  refresh: number
+  defaultSearch?: string
   setPlants: React.Dispatch<React.SetStateAction<PlantOverview[] | null>>
+  refresh: number
 }) {
   // The plant to search duh!
-  const [plantToSearch, setPlantToSearch] = useState<string>('')
+  const [plantToSearch, setPlantToSearch] = useState<string | undefined>(
+    defaultSearch
+  )
   // will fetch the plant once it's done editing
   const getMatchingPlants = async () => {
-    getPlantList(plantToSearch).then((value) =>
+    getPlantList(plantToSearch!).then((value) =>
       value ? setPlants(value.data) : null
     )
   }
@@ -37,6 +41,7 @@ export function PlantSearchBar({
         keyboardType='web-search'
         returnKeyLabel='search'
         returnKeyType='search'
+        value={plantToSearch}
         onChangeText={setPlantToSearch}
         onEndEditing={getMatchingPlants}
         selectTextOnFocus

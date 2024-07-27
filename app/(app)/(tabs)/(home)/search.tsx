@@ -28,11 +28,15 @@ export default function Search() {
   const [plants, setPlants] = useState<PlantOverview[] | null>(null)
   const [refresh, setRefresh] = useState<number>(0)
   // Get the search name whenever the local search params changes
-  const searchName = useMemo(() => local.name as string, [local])
+  const searchName = useMemo(
+    () =>
+      typeof local.name === 'undefined' ? undefined : (local.name as string),
+    [local]
+  )
 
   // Get the matching plants with the given name
   const getMatchingPlants = async () => {
-    getPlantList(searchName).then((value) =>
+    getPlantList(searchName!).then((value) =>
       value ? setPlants(value.data) : null
     )
   }
@@ -47,7 +51,11 @@ export default function Search() {
   return (
     <ThemedView style={styles.container}>
       {/* Search Form */}
-      <PlantSearchBar refresh={refresh} setPlants={setPlants} />
+      <PlantSearchBar
+        refresh={refresh}
+        setPlants={setPlants}
+        defaultSearch={searchName}
+      />
       {/* Search results */}
       <PlantList plants={plants} setRefresh={setRefresh} />
     </ThemedView>
