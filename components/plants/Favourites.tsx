@@ -30,7 +30,7 @@ import { Tables } from '@/types/supabase'
 
 // Constants
 import { Colors } from '@/constants/Colors'
-import { router } from 'expo-router'
+import { router, usePathname } from 'expo-router'
 import { checkThumbnail } from '@/lib/util'
 import { ThemedLabel } from '../ThemedLabel'
 
@@ -42,6 +42,7 @@ export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
 
   // For theme purposes
   const backgroundColor = useThemeColor({}, 'background')
+  const text = useThemeColor({}, 'text')
 
   // Check if the plant is already added by the user
   const [isFavourite, setFavourite] = useState<boolean | null>(null)
@@ -73,9 +74,9 @@ export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
             ? backgroundColor
             : isFavourite
             ? '#f04945'
-            : 'white'
+            : text
         }
-        size={48}
+        size={56}
       />
     </TouchableOpacity>
   )
@@ -90,12 +91,15 @@ export const FavouritePlants = () => {
   // If there's no session, then there's no point
   if (!session) return null
 
+  // Check the pathname, to refresh the favourites
+  const pathname = usePathname()
+
   // Fetch all the favourites of the user
   const [favourites, setFavourites] = useState<Tables<'plants'>[] | null>(null)
 
   useEffect(() => {
     getFavouritePlants(session.user.id).then((value) => setFavourites(value))
-  }, [])
+  }, [pathname])
 
   return (
     <ThemedView>
@@ -111,7 +115,7 @@ export const FavouritePlants = () => {
             // ListFooterComponent={() => <View style={{ paddingBottom: 216 }} />}
             // onRefresh={() => setRefresh((prev) => ++prev)}
             //if set to true, the UI will show a loading indicator
-            refreshing={false}
+            // refreshing={false}
             style={{ marginVertical: 12 }}
           />
         )}

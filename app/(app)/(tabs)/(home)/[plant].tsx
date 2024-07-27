@@ -114,7 +114,7 @@ function PlantInfoHero({ plantConditions, plant }: Props) {
       />
       <RangedAttributeInfoCard
         icon='plant-wilt'
-        name={plant?.dimensions ? plant.dimensions.type : null}
+        name={plantConditions ? 'height' : null}
         min={plant?.dimensions.min_value}
         max={plant?.dimensions.min_value}
         units={plant?.dimensions.unit}
