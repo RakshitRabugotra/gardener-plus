@@ -20,9 +20,9 @@ import { useThemeColor } from '@/hooks/useThemeColor'
 
 // Utilities
 import {
-  getFavouritePlants,
-  isPlantFavourite,
-  toggleFavourite,
+  getFavoritePlants,
+  isPlantFavorite,
+  toggleFavorite,
 } from '@/lib/plants'
 
 // Type definitions
@@ -37,7 +37,7 @@ import { ThemedLabel } from '../ThemedLabel'
 
 const heartColor = '#f04945'
 
-export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
+export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
   // Get the current user
   const { session } = useSession()
   // If there's no session, then there's no point
@@ -48,23 +48,23 @@ export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
   const text = useThemeColor({}, 'text')
 
   // Check if the plant is already added by the user
-  const [isFavourite, setFavourite] = useState<boolean | null>(null)
+  const [isFavorite, setFavorite] = useState<boolean | null>(null)
 
   useEffect(() => {
     // If the plant is null, return false
     if (!plant) return
     // Else check if the plant is favourite?
-    isPlantFavourite(plant.id, session.user.id).then((value) =>
-      setFavourite(value)
+    isPlantFavorite(plant.id, session.user.id).then((value) =>
+      setFavorite(value)
     )
   }, [plant])
 
   const handleToggle = () => {
     // If the plant is null, then there's no favourite
-    if (!plant) return setFavourite(false)
+    if (!plant) return setFavorite(false)
     // Else, set what's the new favourite
-    toggleFavourite(plant.id, session.user.id, !isFavourite).then((value) =>
-      setFavourite(value)
+    toggleFavorite(plant.id, session.user.id, !isFavorite).then((value) =>
+      setFavorite(value)
     )
   }
 
@@ -79,9 +79,9 @@ export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
         <Ionicons
           name='heart'
           color={
-            isFavourite === null
+            isFavorite === null
               ? backgroundColor
-              : isFavourite
+              : isFavorite
               ? heartColor
               : backgroundColor
           }
@@ -95,7 +95,7 @@ export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
 /**
  * The component which shows the favourite plants of the user
  */
-export const FavouritePlants = () => {
+export const FavoritePlants = () => {
   // Get the current user
   const { session } = useSession()
   // If there's no session, then there's no point
@@ -105,10 +105,10 @@ export const FavouritePlants = () => {
   const pathname = usePathname()
 
   // Fetch all the favourites of the user
-  const [favourites, setFavourites] = useState<Tables<'plants'>[] | null>(null)
+  const [favourites, setFavorites] = useState<Tables<'plants'>[] | null>(null)
 
   useEffect(() => {
-    getFavouritePlants(session.user.id).then((value) => setFavourites(value))
+    getFavoritePlants(session.user.id).then((value) => setFavorites(value))
   }, [pathname])
 
   return (
@@ -122,7 +122,7 @@ export const FavouritePlants = () => {
           <FlatList
             horizontal
             data={favourites}
-            renderItem={({ item }) => <FavouritePlantCard {...item} />}
+            renderItem={({ item }) => <FavoritePlantCard {...item} />}
             keyExtractor={(item) => item.id.toString()}
             ListEmptyComponent={() => <ThemedView></ThemedView>}
             // ListFooterComponent={() => <View style={{ paddingBottom: 216 }} />}
@@ -139,9 +139,9 @@ export const FavouritePlants = () => {
 }
 
 /**
- * Favourite plant card
+ * Favorite plant card
  */
-export const FavouritePlantCard = ({
+export const FavoritePlantCard = ({
   id,
   scientific_name,
   common_name,

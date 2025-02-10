@@ -10,20 +10,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarStyle: {
-          position: 'absolute',
-          height: 72,
-          borderWidth: 0,
-          borderRadius: 50,
-          margin: 8,
-          backgroundColor: '#000000',
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: 'bold',
-          marginBottom: 10,
-        },
+        headerShown: false
       }}
     >
       <Tabs.Screen

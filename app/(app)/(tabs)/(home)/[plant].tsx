@@ -26,7 +26,7 @@ import { Colors } from '@/constants/Colors'
 
 // Type definitions
 import { PlantCareConditions, PlantFromID } from '@/types/plants'
-import { AddFavourite } from '@/components/plants/Favourites'
+import { AddFavorite } from '@/components/plants/Favorites'
 
 type Plant = PlantFromID | null
 type CareConditions = PlantCareConditions | null
@@ -73,7 +73,7 @@ export default function PlantInfo() {
           title: plant
             ? addEllipses(capitalize(plant.common_name))
             : 'The Plant',
-          headerRight: () => <AddFavourite plant={plant} />,
+          headerRight: () => <AddFavorite plant={plant} />,
         }}
       />
       {/* The four essentials from the care description */}
@@ -357,13 +357,14 @@ const styles = StyleSheet.create({
   attributeContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: '1%',
+    paddingHorizontal: 16,
     width: '100%',
   },
   attributeBody: {
     borderWidth: 2,
     borderRadius: 24,
     padding: 16,
-    margin: '5%',
     flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',

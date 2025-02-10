@@ -7,6 +7,7 @@
   "cuisine": false,
   "cycle": "Perennial",
   "default_image": {
+    "image_id": 1,
     "license": 45,
     "license_name": "Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)",
     "license_url": "https://creativecommons.org/licenses/by-sa/3.0/deed.en",

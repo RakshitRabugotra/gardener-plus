@@ -1,5 +1,5 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { StyleSheet, useColorScheme } from 'react-native'
+import { Button, StyleSheet, useColorScheme } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
@@ -10,8 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { TouchableOpacity } from 'react-native'
 import { router } from 'expo-router'
-import { useThemeColor } from '@/hooks/useThemeColor'
-import { FavouritePlants } from '@/components/plants/Favourites'
+import { FavoritePlants } from '@/components/plants/Favorites'
 
 export default function HomeScreen() {
   // Get the insets of the safe area in view
@@ -23,12 +22,11 @@ export default function HomeScreen() {
     <ThemedView style={[styles.content, { paddingTop: insets.top }]}>
       {/* The heading of the page */}
       <ThemedView style={styles.headingContainer}>
-        <ThemedText type='title' style={{ fontFamily: 'SpaceMono' }}>
-          Hello,
-          <ThemedText type='title' style={{ fontFamily: 'Display' }}>
-            {session?.user.user_metadata.first_name}
-          </ThemedText>
+        <ThemedText type='title' style={{ fontFamily: 'Display' }}>
+          <ThemedText type='subtitle'>{'Hi, '}</ThemedText>
+          {session?.user.user_metadata.first_name}
         </ThemedText>
+
         <ThemedView style={{ flexDirection: 'row', gap: 2 }}>
           <Notifications />
           <SearchIcon />
@@ -37,8 +35,8 @@ export default function HomeScreen() {
       {/* The search section */}
       {/* Go the dynamic route - for dev only */}
       {/* <Button title='goto [plant]' onPress={() => router.push('/1')} /> */}
-      {/* The Favourite plants of the user */}
-      <FavouritePlants />
+      {/* The Favorite plants of the user */}
+      <FavoritePlants />
     </ThemedView>
   )
 }

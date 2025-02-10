@@ -66,7 +66,7 @@ export interface PlantFromID {
   plant_anatomy: string[]
   sunlight: string[]
   pruning_month: string[]
-  pruning_count: string
+  pruning_count: string[]
   seeds: number
   maintenance: string | null
   thorny: boolean
@@ -80,7 +80,7 @@ export interface PlantFromID {
   cones: boolean
   fruits: boolean
   edible_fruit: boolean
-  fruit_color: string | null
+  fruit_color: string[] | null
   harvest_season: string | null
   leaf: boolean
   leaf_color: string[]

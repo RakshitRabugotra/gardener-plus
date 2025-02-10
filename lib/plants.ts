@@ -180,7 +180,7 @@ export const getPlantationConditions = async (
 /**
  * Is the plant liked by the user?
  */
-export const isPlantFavourite = async (plant_id: number, user_id: string) => {
+export const isPlantFavorite = async (plant_id: number, user_id: string) => {
   const { data, error } = await supabase
     .from('favourite_plants')
     .select()
@@ -195,7 +195,7 @@ export const isPlantFavourite = async (plant_id: number, user_id: string) => {
 /**
  * Get all the favourite plants of the user
  */
-export const getFavouritePlants = async (user_id: string) => {
+export const getFavoritePlants = async (user_id: string) => {
   const { data, error } = await supabase
     .from('favourite_plants')
     .select(`plant_id, plants (*)`)
@@ -212,7 +212,7 @@ export const getFavouritePlants = async (user_id: string) => {
 /**
  * Toggle the plant to favourite
  */
-export const toggleFavourite = async (
+export const toggleFavorite = async (
   plant_id: number,
   user_id: string,
   state: boolean
