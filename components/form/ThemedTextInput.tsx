@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput, TextInputProps, View } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome6'
-import { ThemedText } from '@/components/ThemedText'
+import { ThemedText } from '@/components/ui/ThemedText'
 import { useState } from 'react'
 import { useThemeColor } from '@/hooks/useThemeColor'
 import { useColorScheme } from 'react-native'

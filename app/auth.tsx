@@ -16,7 +16,7 @@ import RegisterForm from '@/components/auth/RegisterForm'
 import Icon from 'react-native-vector-icons/FontAwesome6'
 
 // Internal Dependencies
-import { ThemedText } from '@/components/ThemedText'
+import { ThemedText } from '@/components/ui/ThemedText'
 
 // Custom Hooks
 import { useThemeColor } from '@/hooks/useThemeColor'

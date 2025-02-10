@@ -1,18 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  Dimensions,
   FlatList,
   Image,
+  ImageStyle,
   StyleSheet,
+  TextStyle,
   TouchableOpacity,
   useColorScheme,
   View,
+  ViewStyle,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Text } from 'react-native'
 
 // Internal Components
-import { ThemedView } from '@/components/ThemedView'
-import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ui/ThemedView'
+import { ThemedText } from '@/components/ui/ThemedText'
 
 // Custom Hooks
 import useSession from '@/hooks/useSession'
@@ -27,15 +31,28 @@ import {
 
 // Type definitions
 import { PlantFromID } from '@/types/plants'
-import { Tables } from '@/types/supabase-old'
 
 // Constants
 import { Colors } from '@/constants/Colors'
-import { router, usePathname } from 'expo-router'
+import { Href, router, usePathname } from 'expo-router'
 import { checkThumbnail } from '@/lib/util'
-import { ThemedLabel } from '../ThemedLabel'
+import { ThemedLabel } from '../ui/ThemedLabel'
+import GestureCarousel from '../ui/GestureCarousel'
+import Images from '@/constants/Images'
 
 const heartColor = '#f04945'
+
+type DummyPlantType = {
+  id: string
+  common_name: string
+  default_image?: string
+}
+const DUMMY_PLANTS: DummyPlantType[] = [
+  { id: '1', common_name: 'rosa indica', default_image: undefined },
+  { id: '2', common_name: 'mangiferra indica', default_image: undefined },
+  { id: '3', common_name: 'silver white fur', default_image: undefined },
+  { id: '4', common_name: 'rose', default_image: undefined },
+]
 
 export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
   // Get the current user
@@ -53,26 +70,26 @@ export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
   useEffect(() => {
     // If the plant is null, return false
     if (!plant) return
-    // Else check if the plant is favourite?
+    // Else check if the plant is favorite?
     isPlantFavorite(plant.id, session.user.id).then((value) =>
       setFavorite(value)
     )
   }, [plant])
 
   const handleToggle = () => {
-    // If the plant is null, then there's no favourite
+    // If the plant is null, then there's no favorite
     if (!plant) return setFavorite(false)
-    // Else, set what's the new favourite
+    // Else, set what's the new favorite
     toggleFavorite(plant.id, session.user.id, !isFavorite).then((value) =>
       setFavorite(value)
     )
   }
 
   return (
-    <TouchableOpacity style={styles.wrapper} onPress={() => handleToggle()}>
+    <TouchableOpacity style={stylesheet.wrapper} onPress={() => handleToggle()}>
       <Text
         style={{
-          ...styles.text,
+          ...stylesheet.text,
           backgroundColor: text,
         }}
       >
@@ -93,7 +110,7 @@ export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
 }
 
 /**
- * The component which shows the favourite plants of the user
+ * The component which shows the favorite plants of the user
  */
 export const FavoritePlants = () => {
   // Get the current user
@@ -101,39 +118,117 @@ export const FavoritePlants = () => {
   // If there's no session, then there's no point
   if (!session) return null
 
-  // Check the pathname, to refresh the favourites
+  // Check the pathname, to refresh the favorites
   const pathname = usePathname()
 
-  // Fetch all the favourites of the user
-  const [favourites, setFavorites] = useState<Tables<'plants'>[] | null>(null)
+  // Fetch all the favorites of the user
+  const [favorites, setFavorites] = useState<any[] | null>(null)
 
   useEffect(() => {
-    getFavoritePlants(session.user.id).then((value) => setFavorites(value))
+    // getFavoritePlants(session.user.id).then((value) => setFavorites(value))
   }, [pathname])
 
   return (
-    <ThemedView>
-      <ThemedLabel style={{ marginHorizontal: 16, width: 'auto' }}>
-        Your favorites
-        <Ionicons name='heart' size={16} />
-      </ThemedLabel>
-      <View style={{ flexDirection: 'row', marginLeft: 16 }}>
-        {favourites && (
-          <FlatList
-            horizontal
-            data={favourites}
-            renderItem={({ item }) => <FavoritePlantCard {...item} />}
-            keyExtractor={(item) => item.id.toString()}
-            ListEmptyComponent={() => <ThemedView></ThemedView>}
-            // ListFooterComponent={() => <View style={{ paddingBottom: 216 }} />}
-            // onRefresh={() => setRefresh((prev) => ++prev)}
-            //if set to true, the UI will show a loading indicator
-            // refreshing={false}
-            showsHorizontalScrollIndicator={false}
-            style={{ marginVertical: 12 }}
+    <ThemedView style={{ marginTop: 24 }}>
+      <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <ThemedText type='subtitle'>My Garden</ThemedText>
+        <ThemedText type='defaultSemiBold'>See all</ThemedText>
+      </View>
+      <FlatList
+        horizontal
+        data={favorites}
+        renderItem={({ item }) => <PlantCard {...item} />}
+        keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={() => (
+          <PlantCard
+            href="/search"
+            common_name='Search plants to add'
+            id='0'
+            fallbackRes={Images.addIcon}
+            styles={{
+              text: {
+                paddingHorizontal: 16,
+                fontSize: 14,
+                maxWidth: 150,
+                textOverflow: 'wrap',
+              },
+              image: {
+                width: 50,
+                height: 50,
+                margin: 30,
+                marginHorizontal: 'auto',
+              },
+            }}
           />
         )}
-      </View>
+        showsHorizontalScrollIndicator={false}
+        style={{ marginVertical: 12 }}
+        contentContainerStyle={{ gap: 16 }}
+      />
+    </ThemedView>
+  )
+}
+
+const PlantCard: React.FC<{
+  id: string
+  common_name: string
+  default_image?: string
+  fallbackRes?: any
+  styles?: {
+    text?: TextStyle
+    image?: ImageStyle
+  }
+  href?: Href
+}> = ({
+  id,
+  common_name,
+  href = undefined,
+  default_image = undefined,
+  fallbackRes = undefined,
+  styles = undefined,
+}) => {
+  const colorScheme = useColorScheme()
+
+  // Now get the fields of the image
+  const image = useMemo(
+    () => (default_image ? JSON.parse(default_image) : null),
+    [default_image]
+  )
+  // Check if the plant has thumbnail
+  const hasThumbnail = useMemo(
+    () => default_image && checkThumbnail(image?.thumbnail),
+    [default_image]
+  )
+
+  return (
+    <ThemedView
+      isMutedBackground
+      style={[
+        stylesheet.card,
+        {
+          borderColor:
+            colorScheme === 'dark' ? Colors.light.tabIconDefault : '#000',
+        },
+      ]}
+    >
+      <TouchableOpacity
+        onPress={() => router.push(href ?? `/${id}`)}
+        style={stylesheet.plantContainer}
+      >
+        <Image
+          style={[stylesheet.plantImage, styles?.image]}
+          source={
+            hasThumbnail
+              ? {
+                  uri: image.thumbnail,
+                }
+              : fallbackRes ?? Images.splashLogo
+          }
+        />
+        <ThemedText style={[stylesheet.plantHeading, styles?.text]}>
+          {common_name}
+        </ThemedText>
+      </TouchableOpacity>
     </ThemedView>
   )
 }
@@ -147,7 +242,7 @@ export const FavoritePlantCard = ({
   common_name,
   default_image,
   ...props
-}: Tables<'plants'>) => {
+}: any) => {
   const colorScheme = useColorScheme()
 
   // Now get the fields of the image
@@ -161,7 +256,7 @@ export const FavoritePlantCard = ({
   return (
     <ThemedView
       style={[
-        styles.card,
+        stylesheet.card,
         {
           borderColor:
             colorScheme === 'dark' ? Colors.light.tabIconDefault : '#000',
@@ -171,52 +266,50 @@ export const FavoritePlantCard = ({
     >
       <TouchableOpacity
         onPress={() => router.push(`/${id}`)}
-        style={styles.plantContainer}
+        style={stylesheet.plantContainer}
       >
         <Image
-          style={styles.plantImage}
+          style={stylesheet.plantImage}
           source={
             hasThumbnail
               ? {
                   uri: image.thumbnail,
                 }
-              : require('@/assets/images/splash-logo.png')
+              : Images.splashLogo
           }
         />
 
-        <ThemedText style={styles.plantHeading}>{common_name}</ThemedText>
+        <ThemedText style={stylesheet.plantHeading}>{common_name}</ThemedText>
       </TouchableOpacity>
     </ThemedView>
   )
 }
 
-const styles = StyleSheet.create({
+const stylesheet = StyleSheet.create({
   card: {
-    width: 180,
-    flexWrap: 'wrap',
     borderRadius: 12,
-    marginHorizontal: 8,
-    marginBottom: 16,
-    padding: 12,
   },
   wrapper: {
     paddingVertical: 16,
     paddingHorizontal: 8,
   },
   plantContainer: {
+    width: '100%',
     gap: 8,
     padding: 8,
   },
   plantHeading: {
     fontSize: 16,
     fontWeight: 500,
+    textTransform: 'capitalize',
+    textAlign: 'center',
   },
   plantImage: {
-    width: '100%',
-    aspectRatio: 1,
-    backgroundColor: 'black',
+    width: Dimensions.get('window').width * 0.5,
+    height: Dimensions.get('window').height * 0.2,
+    // backgroundColor: 'black',
     objectFit: 'cover',
-    borderRadius: 12,
+    // borderRadius: 12,
   },
   text: {
     padding: 12,

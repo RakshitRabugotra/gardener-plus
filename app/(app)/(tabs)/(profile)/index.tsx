@@ -10,8 +10,8 @@ import { Session } from '@supabase/supabase-js'
 import { Colors } from '@/constants/Colors'
 
 // Internal Dependencies
-import { ThemedView } from '@/components/ThemedView'
-import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ui/ThemedView'
+import { ThemedText } from '@/components/ui/ThemedText'
 import { ThemedButton } from '@/components/form/ThemedButton'
 import {
   StackForwardLink,

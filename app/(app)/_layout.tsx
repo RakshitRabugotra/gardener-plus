@@ -6,6 +6,8 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native'
+// To handle gestures
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 // Custom hooks
 import { useThemeColor } from '@/hooks/useThemeColor'
@@ -43,17 +45,19 @@ export default function AppLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{
-            statusBarBackgroundColor: statusBarColor
-          }}
-        >
-          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-          <Stack.Screen name='+not-found' />
-        </Stack>
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView>
+      <SafeAreaProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack
+            screenOptions={{
+              statusBarBackgroundColor: statusBarColor
+            }}
+          >
+            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+            <Stack.Screen name='+not-found' />
+          </Stack>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }

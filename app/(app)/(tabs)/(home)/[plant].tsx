@@ -5,12 +5,12 @@ import { useColorScheme } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome6'
 
 // Internal dependencies
-import { ThemedView } from '@/components/ThemedView'
-import { ThemedText } from '@/components/ThemedText'
-import { ThemedScrollView } from '@/components/ThemedScrollView'
+import { ThemedView } from '@/components/ui/ThemedView'
+import { ThemedText } from '@/components/ui/ThemedText'
+import { ThemedScrollView } from '@/components/ui/ThemedScrollView'
 import { Collapsible } from '@/components/Collapsible'
 import { ExternalLink } from '@/components/ExternalLink'
-import { ThemedLabel } from '@/components/ThemedLabel'
+import { ThemedLabel } from '@/components/ui/ThemedLabel'
 
 /*
 For testing and development

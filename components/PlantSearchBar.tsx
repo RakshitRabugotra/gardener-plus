@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 // Internal Dependencies
-import { ThemedView } from './ThemedView'
+import { ThemedView } from './ui/ThemedView'
 import { PlantOverview } from '@/types/plants'
 import { getPlantList } from '@/lib/plants'
 

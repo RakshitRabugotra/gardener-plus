@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native'
 
-import { ThemedText } from '@/components/ThemedText'
+import { ThemedText } from '@/components/ui/ThemedText'
 import { Colors } from '@/constants/Colors'
 import { ViewProps } from 'react-native'
 

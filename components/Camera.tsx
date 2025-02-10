@@ -6,8 +6,8 @@ import { Button, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 // Components
-import { ThemedView } from './ThemedView'
-import { ThemedText } from './ThemedText'
+import { ThemedView } from './ui/ThemedView'
+import { ThemedText } from './ui/ThemedText'
 
 export default function Camera({
   getPicture,
