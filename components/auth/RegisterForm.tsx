@@ -30,11 +30,14 @@ export default function RegisterForm() {
       error,
     } = await signUpWithEmail({ email, password, firstName, lastName })
     if (error) Alert.alert(error.message)
-    if (!session) Alert.alert('Something went wrong... try again later')
+    console.log("result: ", session)
+  console.log("error: ", error);
+
+    if (!session) Alert.alert('Email Verification', `Check inbox for email verification at ${email}`)
     setLoading(false)
     // Redirect the user to the home page
     if (session) {
-      Alert.alert('Registration successfull! Try logging in!')
+      Alert.alert('Registration successful! Try logging in!')
       router.replace('/')
     }
   }

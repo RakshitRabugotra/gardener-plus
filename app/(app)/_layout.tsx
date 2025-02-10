@@ -47,7 +47,7 @@ export default function AppLayout() {
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack
           screenOptions={{
-            statusBarColor,
+            statusBarBackgroundColor: statusBarColor
           }}
         >
           <Stack.Screen name='(tabs)' options={{ headerShown: false }} />

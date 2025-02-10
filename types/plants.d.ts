@@ -13,32 +13,32 @@ export interface PlantImage {
   thumbnail: string
 }
 
-/**
- * The Plant overview from the plant list
- */
-export interface PlantOverview {
-  id: number
-  common_name: string
-  scientific_name: string[]
-  other_name: string[]
-  cycle: 'Annual' | 'Biennial' | 'Perennial' | string
-  watering: string
-  sunlight: []
-  default_image: PlantImage
-}
+// /**
+//  * The Plant overview from the plant list
+//  */
+// export interface PlantOverview {
+//   id: number
+//   common_name: string
+//   scientific_name: string[]
+//   other_name: string[]
+//   cycle: 'Annual' | 'Biennial' | 'Perennial' | string
+//   watering: string
+//   sunlight: []
+//   default_image: PlantImage
+// }
 
 /**
  * The interface that is returned when searching for a plant
  */
-export interface PlantList {
-  data: PlantOverview[]
-  to: number
-  per_page: number
-  current_page: number
-  from: number
-  last_page: number
-  total: number
-}
+// export interface PlantList {
+//   data: PlantOverview[]
+//   to: number
+//   per_page: number
+//   current_page: number
+//   from: number
+//   last_page: number
+//   total: number
+// }
 
 /**
  * The details of the specific plant from id
@@ -119,7 +119,7 @@ export interface PlantCareConditions {
 /**
  * Custom structure to check whether the given image contains a plant
  */
-export interface PlantDescription {
-  isPlant: boolean
-  plantScientificName: string | null
-}
+// export interface PlantDescription {
+//   isPlant: boolean
+//   plantScientificName: string | null
+// }

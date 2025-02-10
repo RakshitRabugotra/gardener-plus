@@ -10,6 +10,7 @@ import { AuthCredentials, signInWithEmail, signOut } from '@/actions/auth'
 
 export const AuthContext = createContext<{
   session: Session | null
+  error: Error | null,
   signIn: (props: AuthCredentials) => Promise<{
     session: Session | null
     error: AuthError | null
@@ -18,6 +19,7 @@ export const AuthContext = createContext<{
   isLoading: boolean
 }>({
   session: null,
+  error: null,
   isLoading: false,
   signIn: async () => ({ session: null, error: null }),
   signOut() {},
@@ -41,6 +43,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     <AuthContext.Provider
       value={{
         session,
+        error,
         signIn: async (props) => {
           const {
             data: { session },

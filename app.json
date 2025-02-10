@@ -4,14 +4,10 @@
     "slug": "gardener-plus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/splash-logo.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -19,8 +15,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.rakshit413.gardenerplus"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -30,24 +25,17 @@
     "plugins": [
       "expo-router",
       [
-        "expo-camera",
+        "expo-splash-screen",
         {
-          "cameraPermission": "Allow Gardener-Plus to access your camera",
-          "microphonePermission": "Allow Gardener-Plus to access your microphone",
-          "recordAudioAndroid": true
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "f894a3aa-6aa0-4bbf-99d8-59d23972eae1"
-      }
     }
   }
 }

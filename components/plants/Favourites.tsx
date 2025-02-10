@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { Text } from 'react-native'
 
 // Internal Components
 import { ThemedView } from '@/components/ThemedView'
@@ -26,13 +27,15 @@ import {
 
 // Type definitions
 import { PlantFromID } from '@/types/plants'
-import { Tables } from '@/types/supabase'
+import { Tables } from '@/types/supabase-old'
 
 // Constants
 import { Colors } from '@/constants/Colors'
 import { router, usePathname } from 'expo-router'
 import { checkThumbnail } from '@/lib/util'
 import { ThemedLabel } from '../ThemedLabel'
+
+const heartColor = '#f04945'
 
 export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
   // Get the current user
@@ -67,17 +70,24 @@ export function AddFavourite({ plant }: { plant: PlantFromID | null }) {
 
   return (
     <TouchableOpacity style={styles.wrapper} onPress={() => handleToggle()}>
-      <Ionicons
-        name='heart-circle'
-        color={
-          isFavourite === null
-            ? backgroundColor
-            : isFavourite
-            ? '#f04945'
-            : text
-        }
-        size={56}
-      />
+      <Text
+        style={{
+          ...styles.text,
+          backgroundColor: text,
+        }}
+      >
+        <Ionicons
+          name='heart'
+          color={
+            isFavourite === null
+              ? backgroundColor
+              : isFavourite
+              ? heartColor
+              : backgroundColor
+          }
+          size={24}
+        />
+      </Text>
     </TouchableOpacity>
   )
 }
@@ -103,8 +113,11 @@ export const FavouritePlants = () => {
 
   return (
     <ThemedView>
-      <ThemedLabel>Your favorites</ThemedLabel>
-      <View style={{ flexDirection: 'row' }}>
+      <ThemedLabel style={{ marginHorizontal: 16, width: 'auto' }}>
+        Your favorites
+        <Ionicons name='heart' size={16} />
+      </ThemedLabel>
+      <View style={{ flexDirection: 'row', marginLeft: 16 }}>
         {favourites && (
           <FlatList
             horizontal
@@ -116,6 +129,7 @@ export const FavouritePlants = () => {
             // onRefresh={() => setRefresh((prev) => ++prev)}
             //if set to true, the UI will show a loading indicator
             // refreshing={false}
+            showsHorizontalScrollIndicator={false}
             style={{ marginVertical: 12 }}
           />
         )}
@@ -203,5 +217,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     objectFit: 'cover',
     borderRadius: 12,
+  },
+  text: {
+    padding: 12,
+    borderRadius: 999,
+    aspectRatio: 1,
   },
 })

@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+    borderRadius: 24,
     minWidth: '100%',
   },
   buttonContainer: {

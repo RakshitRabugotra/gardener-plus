@@ -143,8 +143,6 @@ function PlantDescriptionPreview({
                 <GotoPlant
                   href={'/search?name=' + description.plantScientificName}
                 />
-
-                {/* textStyles={styles.plantName} */}
               </View>
             )}
           </>
@@ -204,6 +202,8 @@ const styles = StyleSheet.create({
   },
   plantName: {
     fontFamily: 'Display',
+    flexWrap: 'wrap',
+    maxWidth: '50%',
     fontSize: 24,
   },
   previewContainer: {
@@ -220,15 +220,3 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
 })
-
-/* <SearchBar
-    className="text-base grow border-0 outline-0 p-4 rounded-3xl bg-white"
-    placeholder="Or Search By Name..."
-    keyboardType="web-search"
-    returnKeyLabel="search"
-    returnKeyType="search"
-    // onChangeText={setPlantToSearch}
-    // onEndEditing={getMatchingPlants}
-    onIconPress={() => {}}
-    selectTextOnFocus
-/> */

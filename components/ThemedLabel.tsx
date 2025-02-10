@@ -3,12 +3,15 @@ import { useThemeColor } from '@/hooks/useThemeColor'
 import { PropsWithChildren } from 'react'
 import { useColorScheme } from 'react-native'
 import { ThemedText } from './ThemedText'
+import { TextStyle } from 'react-native'
 
 export function ThemedLabel({
   children,
   mono = false,
+  style,
 }: PropsWithChildren & {
   mono?: boolean
+  style?: TextStyle
 }) {
   const colorScheme = useColorScheme()
   const tintColor = useThemeColor({}, 'tint')
@@ -27,6 +30,7 @@ export function ThemedLabel({
         fontFamily: 'SpaceMono',
         color: '#000',
         backgroundColor: background[colorScheme || 'light'],
+        ...style,
       }}
     >
       {children}

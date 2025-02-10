@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingVertical: 32,
-    paddingHorizontal: 16,
     gap: 16,
     overflow: 'hidden',
   },
@@ -92,5 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 8,
     paddingVertical: 8,
+    paddingHorizontal: 16,
   },
 })
