@@ -6,7 +6,7 @@ import {
 } from 'react'
 import { supabase } from '@/lib/supabase'
 import { AuthError, Session } from '@supabase/supabase-js'
-import { AuthCredentials, signInWithEmail, signOut } from '@/actions/auth'
+import { AuthCredentials, signInWithEmail, signOut } from '@/service/auth'
 
 export const AuthContext = createContext<{
   session: Session | null

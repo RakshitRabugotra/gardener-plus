@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Alert, StyleSheet, View } from 'react-native'
 
 // Custom Actions
-import { signUpWithEmail } from '@/actions/auth'
+import { signUpWithEmail } from '@/service/auth'
 
 // Internal Dependencies
 import ThemedTextInput from '@/components/form/ThemedTextInput'
