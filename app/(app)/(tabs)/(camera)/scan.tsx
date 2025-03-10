@@ -30,6 +30,7 @@ import { getPlantFromImage } from '@/lib/gemini'
 // Custom Hooks
 import { useThemeColor } from '@/hooks/useThemeColor'
 import { PaddedView } from '@/components/ui/PaddedView'
+import { saveScan } from '@/service/storage'
 
 export default function Scan() {
   // The picture taken by the camera
@@ -74,6 +75,16 @@ export default function Scan() {
     // Get the name of the plant from this
     getPlantFromImage({ image: picture }).then((plantDescription) => {
       setPictureDesc(plantDescription)
+      // When we get the description, set the previous scans object
+      if (!plantDescription) return
+      // Save the new photo to the async storage
+      saveScan({
+        id: picture?.base64!,
+        image: picture?.uri!,
+        plantCommonName: plantDescription.plantScientificName!,
+        isPlant: plantDescription.isPlant!,
+        plantScientificName: plantDescription.plantScientificName!,
+      })
     })
   }, [picture])
 

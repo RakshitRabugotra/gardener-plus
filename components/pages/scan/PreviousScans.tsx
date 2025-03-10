@@ -1,32 +1,31 @@
+import { FlatList } from 'react-native'
 import { Section } from '@/components/Section'
 import { ImageCard } from '@/components/ui/ImageCard'
-import { PlantDescription } from '@/types/plants'
-import { FlatList } from 'react-native'
-
-interface PlantScan extends Partial<PlantDescription> {
-  id: string
-  image: string
-  plantCommonName: string
-}
-
-const scans: PlantScan[] = [
-  { id: '1', plantCommonName: 'A', image: 'some-image' },
-  { id: '2', plantCommonName: 'B', image: 'some-image' },
-  { id: '3', plantCommonName: 'C', image: 'some-image' },
-  { id: '4', plantCommonName: 'D', image: 'some-image' },
-  { id: '5', plantCommonName: 'E', image: 'some-image' },
-  { id: '6', plantCommonName: 'F', image: 'some-image' },
-]
+import { PlantScan } from '@/types/plants'
+import { useEffect, useState } from 'react'
+import { getScans } from '@/service/storage'
 
 export const PreviousScans = () => {
+  const [scans, setScans] = useState<PlantScan[]>([])
+
+  useEffect(() => {
+    getScans()
+      .then((storageScans) => storageScans && setScans(storageScans))
+      .catch((error) =>
+        console.error(
+          'Error while setting scans in PreviousScans ' + error?.toString()
+        )
+      )
+  }, [])
+
   return (
     <Section title='Previous scans'>
       <FlatList
         horizontal
         data={scans}
-        renderItem={({ item }) => <ScanCard {...item} key={item.id} />}
-        keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={() => (
+        renderItem={({ item }) => <ScanCard {...item} key={item?.id} />}
+        keyExtractor={(item) => item?.id?.toString() ?? 0}
+        ListEmptyComponent={
           <ImageCard
             text='Search plants to add'
             styles={{
@@ -44,7 +43,7 @@ export const PreviousScans = () => {
               },
             }}
           />
-        )}
+        }
         showsHorizontalScrollIndicator={false}
         style={{ marginVertical: 12 }}
         contentContainerStyle={{ gap: 16 }}

@@ -123,3 +123,12 @@ export interface PlantDescription {
   isPlant: boolean
   plantScientificName: string | null
 }
+
+/**
+ * The scans of plant images
+ */
+export interface PlantScan extends Partial<PlantDescription> {
+  id: string
+  image: string
+  plantCommonName: string
+}
