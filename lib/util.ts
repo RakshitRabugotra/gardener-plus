@@ -28,4 +28,4 @@ export const addEllipses = (string: string, maxLength: number = 23) =>
  * Checks if the given url is usable to parse images
  */
 export const checkThumbnail = (thumbnail: string) =>
-  thumbnail && !thumbnail.toLowerCase().includes('upgrade')
+  Boolean(thumbnail && !thumbnail.toLowerCase().includes('upgrade'))

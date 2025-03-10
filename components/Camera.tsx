@@ -1,6 +1,6 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
 import { useRef, useState } from 'react'
-import { Button, StyleSheet, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
 
 // Icon
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -8,6 +8,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 // Components
 import { ThemedView } from './ui/ThemedView'
 import { ThemedText } from './ui/ThemedText'
+import { Button } from '@rneui/themed'
+import { useThemeColor } from '@/hooks/useThemeColor'
 
 export default function Camera({
   getPicture,
@@ -25,14 +27,7 @@ export default function Camera({
 
   if (!permission.granted) {
     // Camera permissions are not granted yet.
-    return (
-      <ThemedView style={styles.container}>
-        <ThemedText style={styles.message}>
-          We need your permission to show the camera
-        </ThemedText>
-        <Button onPress={requestPermission} title='grant permission' />
-      </ThemedView>
-    )
+    return <NoPermissionFallback onPress={requestPermission} />
   }
 
   function toggleCameraFacing() {
@@ -71,13 +66,38 @@ export default function Camera({
   )
 }
 
+const NoPermissionFallback = ({ onPress }: { onPress: () => void }) => {
+  const backgroundColor = useThemeColor({}, 'tabIconSelected')
+
+  return (
+    <ThemedView style={styles.page}>
+      <ThemedText style={styles.message}>
+        We need your permission to show the camera
+      </ThemedText>
+      <Button
+        onPress={onPress}
+        buttonStyle={[styles.grantButton, { backgroundColor }]}
+      >
+        Grant Permission
+      </Button>
+    </ThemedView>
+  )
+}
+
 const styles = StyleSheet.create({
+  page: {
+    height: Dimensions.get('screen').height / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     justifyContent: 'center',
-    borderBottomEndRadius: 24,
     overflow: 'hidden',
     width: '100%',
     aspectRatio: 3 / 4,
+  },
+  grantButton: {
+    borderRadius: 8,
   },
   message: {
     textAlign: 'center',
@@ -85,7 +105,6 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-    borderRadius: 24,
     minWidth: '100%',
   },
   buttonContainer: {

@@ -119,7 +119,7 @@ export interface PlantCareConditions {
 /**
  * Custom structure to check whether the given image contains a plant
  */
-// export interface PlantDescription {
-//   isPlant: boolean
-//   plantScientificName: string | null
-// }
+export interface PlantDescription {
+  isPlant: boolean
+  plantScientificName: string | null
+}

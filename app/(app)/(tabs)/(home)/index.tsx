@@ -1,29 +1,31 @@
+// react-native
+import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { StyleSheet, useColorScheme } from 'react-native'
 
+// expo
+import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
+
+// Custom Components
 import { ThemedText } from '@/components/ui/ThemedText'
 import { ThemedView } from '@/components/ui/ThemedView'
-
-// Utilities
-import useSession from '@/hooks/useSession'
-import { Ionicons } from '@expo/vector-icons'
-import { Colors } from '@/constants/Colors'
-import { TouchableOpacity } from 'react-native'
-import { router, Stack } from 'expo-router'
-import { FavoritePlants } from '@/components/plants/Favorites'
-import PaddedView from '@/components/ui/PaddedView'
-import NotificationInbox from '@/components/NotifcationInbox'
-import PendingTasks from '@/components/ui/home/PendingTasks'
 import { ThemedScrollView } from '@/components/ui/ThemedScrollView'
-import { useThemeColor } from '@/hooks/useThemeColor'
+import { PaddedView } from '@/components/ui/PaddedView'
+import { NotificationInbox } from '@/components/pages/home/NotificationInbox'
+import { PendingTasks } from '@/components/pages/home/PendingTasks'
+import { FavoritePlants } from '@/components/pages/home/FavoritePlants'
+
+// libs/helpers
+import { Colors } from '@/constants/Colors'
+
+// hooks
+import useSession from '@/hooks/useSession'
 
 export default function HomeScreen() {
   // Get the insets of the safe area in view
   const insets = useSafeAreaInsets()
   // Get the current logged-in user
-  const { session, signOut } = useSession()
-  // The theme color
-  const backgroundColor = useThemeColor({}, 'background')
+  const { session } = useSession()
 
   return (
     <ThemedScrollView style={[styles.content, { paddingTop: insets.top }]}>

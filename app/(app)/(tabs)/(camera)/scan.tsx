@@ -1,38 +1,35 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Dimensions,
   Image,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from 'react-native'
+import { Href, router } from 'expo-router'
 
 // To handle file system
 import * as FileSystem from 'expo-file-system'
 
 // Internal Dependencies
 import Camera from '@/components/Camera'
+import { ThemedText } from '@/components/ui/ThemedText'
+import { ThemedView } from '@/components/ui/ThemedView'
+import { ThemedScrollView } from '@/components/ui/ThemedScrollView'
+import { PreviousScans } from '@/components/pages/scan/PreviousScans'
 
 // Type definitions
 import type { CameraCapturedPicture, CameraView } from 'expo-camera'
+import type { PlantDescription } from '@/types/plants'
 
 // Icon Dependencies
-import { getPlantFromImage } from '@/lib/gemini'
-import { ThemedText } from '@/components/ui/ThemedText'
-import { ThemedView } from '@/components/ui/ThemedView'
-import { router } from 'expo-router'
-import { PlantDescription } from '@/types/plants'
-import { ThemedButton } from '@/components/form/ThemedButton'
-import { ThemedScrollView } from '@/components/ui/ThemedScrollView'
-import { Colors } from '@/constants/Colors'
-import { useThemeColor } from '@/hooks/useThemeColor'
 import { Ionicons } from '@expo/vector-icons'
+import { getPlantFromImage } from '@/lib/gemini'
 
-// import SearchBar from '@components/SearchBar'
-// import { getPlantFromImage } from '@lib/gemini'
+// Custom Hooks
+import { useThemeColor } from '@/hooks/useThemeColor'
+import { PaddedView } from '@/components/ui/PaddedView'
 
 export default function Scan() {
   // The picture taken by the camera
@@ -50,7 +47,6 @@ export default function Scan() {
     cam.current
       ?.takePictureAsync({
         quality: 0.4,
-        skipProcessing: true,
         exif: false,
         // fastMode: true,
       })
@@ -71,6 +67,9 @@ export default function Scan() {
 
   // Get the description of the plant, whenever the photo changes
   useEffect(() => {
+    // Only if picture is defined
+    if (!picture) return
+
     setPictureDesc(null)
     // Get the name of the plant from this
     getPlantFromImage({ image: picture }).then((plantDescription) => {
@@ -83,22 +82,24 @@ export default function Scan() {
       <View style={styles.content}>
         <Camera getPicture={getPicture} />
       </View>
-      <PlantDescriptionPreview picture={picture} description={pictureDesc} />
+      <PaddedView style={{ paddingBottom: 250 }}>
+        <PlantDescriptionPreview picture={picture} description={pictureDesc} />
+      </PaddedView>
     </ThemedScrollView>
   )
 }
 
-function PlantDescriptionPreview({
+const PlantDescriptionPreview = ({
   picture,
   description,
 }: {
   picture?: CameraCapturedPicture
   description: PlantDescription | null
-}) {
+}) => {
   // For color and themes
   const tint = useThemeColor({}, 'tint')
 
-  if (!picture || typeof picture === 'undefined') return
+  if (!picture || typeof picture === 'undefined') return <PreviousScans />
 
   // Else, return the option to search the plant
   return (
@@ -116,43 +117,50 @@ function PlantDescriptionPreview({
           }}
         />
         {!description ? (
-          <View style={styles.initialView}>
-            <ThemedText type='subtitle' style={{ fontFamily: 'SpaceMono' }}>
-              Identifying
-            </ThemedText>
-            <ActivityIndicator size='large' color={'black'} />
-          </View>
+          <LoadingFallback />
         ) : (
-          <>
-            {!description.isPlant ? (
-              <View style={styles.initialView}>
-                <ThemedText type='subtitle' style={{ fontFamily: 'SpaceMono' }}>
-                  No plant found!
-                </ThemedText>
-              </View>
-            ) : (
-              <View
-                style={[
-                  styles.initialView,
-                  { justifyContent: 'space-between' },
-                ]}
-              >
-                <ThemedText style={styles.plantName}>
-                  {description.plantScientificName}
-                </ThemedText>
-                <GotoPlant
-                  href={'/search?name=' + description.plantScientificName}
-                />
-              </View>
-            )}
-          </>
+          <SearchResult description={description} />
         )}
       </ThemedView>
     </View>
   )
 }
 
-function GotoPlant({ href }: { href: string }) {
+const LoadingFallback = () => {
+  return (
+    <View style={styles.initialView}>
+      <ThemedText type='subtitle' style={{ fontFamily: 'SpaceMono' }}>
+        Identifying
+      </ThemedText>
+      <ActivityIndicator size='large' color={'black'} />
+    </View>
+  )
+}
+
+const SearchResult = ({ description }: { description: PlantDescription }) => {
+  return (
+    <>
+      {!description.isPlant ? (
+        <View style={styles.initialView}>
+          <ThemedText type='subtitle' style={{ fontFamily: 'SpaceMono' }}>
+            No plant found!
+          </ThemedText>
+        </View>
+      ) : (
+        <View style={[styles.initialView, { justifyContent: 'space-between' }]}>
+          <ThemedText style={styles.plantName}>
+            {description.plantScientificName}
+          </ThemedText>
+          <GotoPlant
+            href={('/search?name=' + description.plantScientificName) as Href}
+          />
+        </View>
+      )}
+    </>
+  )
+}
+
+const GotoPlant = ({ href }: { href: Href }) => {
   const tint = useThemeColor({}, 'tint')
 
   return (
@@ -210,7 +218,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     flex: 1,
     flexDirection: 'row',
-    padding: 12,
     gap: 16,
     alignItems: 'center',
   },

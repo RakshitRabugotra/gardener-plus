@@ -1,7 +1,7 @@
 import { ViewStyle } from "react-native"
 import { ThemedView, ThemedViewProps } from "./ThemedView"
 
-const PaddedView = ({
+export const PaddedView = ({
   children,
   style,
   override = {
@@ -21,5 +21,3 @@ const PaddedView = ({
     </ThemedView>
   )
 }
-
-export default PaddedView

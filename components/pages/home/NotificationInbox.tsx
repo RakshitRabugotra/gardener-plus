@@ -1,10 +1,11 @@
 import { ActivityIndicator, View } from 'react-native'
-import { ThemedText } from './ui/ThemedText'
-import { ThemedView } from './ui/ThemedView'
-import { ThemedButton } from './form/ThemedButton'
-import GestureCarousel from './ui/GestureCarousel'
-import { useMemo, useState } from 'react'
+import { ThemedText } from '../../ui/ThemedText'
+import { ThemedView } from '../../ui/ThemedView'
+import { ThemedButton } from '../../form/ThemedButton'
+import { GestureCarousel } from '../../ui/GestureCarousel'
+import { useState } from 'react'
 import { useThemeColor } from '@/hooks/useThemeColor'
+import { Section } from '@/components/Section'
 
 interface NotificationProps {
   id: string
@@ -38,48 +39,21 @@ const fallbackItem: NotificationProps = {
   createdAt: new Date(),
 }
 
-const NotificationInbox = () => {
+export const NotificationInbox = () => {
   const tint = useThemeColor({}, 'tint')
+
   const [data, setData] = useState<NotificationProps[] | null>(
     DUMMY_NOTIFICATION
   )
 
-  const emptyFallback = useMemo(
-    () => (
-      <ThemedView
-        isMutedBackground
-        style={{
-          padding: 16,
-          width: '100%',
-          borderRadius: 12,
-          marginVertical: 16,
-          marginBottom: 18,
-        }}
-      >
-        <ThemedText type='defaultSemiBold'>{fallbackItem.text}</ThemedText>
-      </ThemedView>
-    ),
-    []
-  )
-
-  const loadingFallback = useMemo(
-    () => (
-      <View style={{ padding: 32 }}>
-        <ActivityIndicator size='large' color={tint} />
-      </View>
-    ),
-    []
-  )
-
   return (
-    <ThemedView style={{ marginTop: 24 }}>
-      <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <ThemedText type='subtitle'>Notification Alerts</ThemedText>
-        <ThemedText type='defaultSemiBold'>See all</ThemedText>
-      </View>
+    <Section
+      title='Notification Alerts'
+      moreOptions={{ text: 'See all', onPress: () => {} }}
+    >
       {!!data ? (
         data.length === 0 ? (
-          emptyFallback
+          <EmptyFallback />
         ) : (
           <GestureCarousel
             data={data}
@@ -92,17 +66,17 @@ const NotificationInbox = () => {
           />
         )
       ) : (
-        loadingFallback
+        <LoadingFallback color={tint} />
       )}
-    </ThemedView>
+    </Section>
   )
 }
 
-const Notification: React.FC<NotificationProps> = ({
+const Notification = ({
   id,
   text,
   createdAt = new Date(),
-}) => {
+}: NotificationProps) => {
   const dummyMessage = 'You have not watered your plant: Rose today!'
 
   return (
@@ -154,4 +128,23 @@ const Notification: React.FC<NotificationProps> = ({
   )
 }
 
-export default NotificationInbox
+const EmptyFallback = () => (
+  <ThemedView
+    isMutedBackground
+    style={{
+      padding: 16,
+      width: '100%',
+      borderRadius: 12,
+      marginVertical: 16,
+      marginBottom: 18,
+    }}
+  >
+    <ThemedText type='defaultSemiBold'>{fallbackItem.text}</ThemedText>
+  </ThemedView>
+)
+
+const LoadingFallback = ({ color }: { color: string }) => (
+  <View style={{ padding: 32 }}>
+    <ActivityIndicator size='large' color={color} />
+  </View>
+)

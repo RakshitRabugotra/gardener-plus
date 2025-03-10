@@ -26,7 +26,7 @@ import { Colors } from '@/constants/Colors'
 
 // Type definitions
 import { PlantCareConditions, PlantFromID } from '@/types/plants'
-import { AddFavorite } from '@/components/plants/Favorites'
+import { AddFavorite } from '@/components/pages/home/FavoritePlants'
 
 type Plant = PlantFromID | null
 type CareConditions = PlantCareConditions | null

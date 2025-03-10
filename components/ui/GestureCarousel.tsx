@@ -22,7 +22,7 @@ export interface GestureCarouselProps<T> {
   }
 }
 
-export default function GestureCarousel<T>({
+export function GestureCarousel<T>({
   isPaginated = false,
   width = defaultWidth,
   height = defaultWidth / 2,

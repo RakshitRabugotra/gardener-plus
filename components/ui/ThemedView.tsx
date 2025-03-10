@@ -21,7 +21,7 @@ export function ThemedView({
   )
 
   const mutedBackground = useThemeColor({
-    light: "",
+    light: "#eeeeeeee",
     dark: "#2d2d2d"
   }, 'background') 
 

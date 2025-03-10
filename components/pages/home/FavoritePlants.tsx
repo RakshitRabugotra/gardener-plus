@@ -11,8 +11,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
+import { Href, router, usePathname } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { Text } from 'react-native'
 
 // Internal Components
 import { ThemedView } from '@/components/ui/ThemedView'
@@ -28,17 +28,17 @@ import {
   isPlantFavorite,
   toggleFavorite,
 } from '@/lib/plants'
+import { checkThumbnail } from '@/lib/util'
 
 // Type definitions
 import { PlantFromID } from '@/types/plants'
 
 // Constants
 import { Colors } from '@/constants/Colors'
-import { Href, router, usePathname } from 'expo-router'
-import { checkThumbnail } from '@/lib/util'
-import { ThemedLabel } from '../ui/ThemedLabel'
-import GestureCarousel from '../ui/GestureCarousel'
 import Images from '@/constants/Images'
+import { Text } from '@rneui/themed'
+import { Section } from '@/components/Section'
+import { ImageCard } from '@/components/ui/ImageCard'
 
 const heartColor = '#f04945'
 
@@ -129,11 +129,7 @@ export const FavoritePlants = () => {
   }, [pathname])
 
   return (
-    <ThemedView style={{ marginTop: 24 }}>
-      <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <ThemedText type='subtitle'>My Garden</ThemedText>
-        <ThemedText type='defaultSemiBold'>See all</ThemedText>
-      </View>
+    <Section title='My Garden'>
       <FlatList
         horizontal
         data={favorites}
@@ -141,7 +137,7 @@ export const FavoritePlants = () => {
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={() => (
           <PlantCard
-            href="/search"
+            href='/search'
             common_name='Search plants to add'
             id='0'
             fallbackRes={Images.addIcon}
@@ -165,152 +161,48 @@ export const FavoritePlants = () => {
         style={{ marginVertical: 12 }}
         contentContainerStyle={{ gap: 16 }}
       />
-    </ThemedView>
-  )
-}
-
-const PlantCard: React.FC<{
-  id: string
-  common_name: string
-  default_image?: string
-  fallbackRes?: any
-  styles?: {
-    text?: TextStyle
-    image?: ImageStyle
-  }
-  href?: Href
-}> = ({
-  id,
-  common_name,
-  href = undefined,
-  default_image = undefined,
-  fallbackRes = undefined,
-  styles = undefined,
-}) => {
-  const colorScheme = useColorScheme()
-
-  // Now get the fields of the image
-  const image = useMemo(
-    () => (default_image ? JSON.parse(default_image) : null),
-    [default_image]
-  )
-  // Check if the plant has thumbnail
-  const hasThumbnail = useMemo(
-    () => default_image && checkThumbnail(image?.thumbnail),
-    [default_image]
-  )
-
-  return (
-    <ThemedView
-      isMutedBackground
-      style={[
-        stylesheet.card,
-        {
-          borderColor:
-            colorScheme === 'dark' ? Colors.light.tabIconDefault : '#000',
-        },
-      ]}
-    >
-      <TouchableOpacity
-        onPress={() => router.push(href ?? `/${id}`)}
-        style={stylesheet.plantContainer}
-      >
-        <Image
-          style={[stylesheet.plantImage, styles?.image]}
-          source={
-            hasThumbnail
-              ? {
-                  uri: image.thumbnail,
-                }
-              : fallbackRes ?? Images.splashLogo
-          }
-        />
-        <ThemedText style={[stylesheet.plantHeading, styles?.text]}>
-          {common_name}
-        </ThemedText>
-      </TouchableOpacity>
-    </ThemedView>
+    </Section>
   )
 }
 
 /**
  * Favorite plant card
  */
-export const FavoritePlantCard = ({
+export const PlantCard = ({
   id,
   scientific_name,
   common_name,
   default_image,
+  fallbackRes,
+  styles,
   ...props
 }: any) => {
-  const colorScheme = useColorScheme()
-
   // Now get the fields of the image
-  const image = useMemo(() => JSON.parse(default_image), [default_image])
-  // Check if the plant has thumbnail
-  const hasThumbnail = useMemo(
-    () => default_image && checkThumbnail(image.thumbnail),
-    [default_image]
-  )
+  const image = useMemo(() => {
+    try {
+      return JSON.parse(default_image)
+    } catch (error) {
+      return undefined
+    }
+  }, [default_image])
 
   return (
-    <ThemedView
-      style={[
-        stylesheet.card,
-        {
-          borderColor:
-            colorScheme === 'dark' ? Colors.light.tabIconDefault : '#000',
-          backgroundColor: colorScheme === 'dark' ? Colors.light.text : '#fff',
-        },
-      ]}
-    >
-      <TouchableOpacity
-        onPress={() => router.push(`/${id}`)}
-        style={stylesheet.plantContainer}
-      >
-        <Image
-          style={stylesheet.plantImage}
-          source={
-            hasThumbnail
-              ? {
-                  uri: image.thumbnail,
-                }
-              : Images.splashLogo
-          }
-        />
-
-        <ThemedText style={stylesheet.plantHeading}>{common_name}</ThemedText>
-      </TouchableOpacity>
-    </ThemedView>
+    <ImageCard
+      text={common_name}
+      imageSrc={image?.thumbnail}
+      href={`/${id}`}
+      fallbackSrc={fallbackRes}
+      styles={styles}
+    />
   )
 }
 
 const stylesheet = StyleSheet.create({
-  card: {
-    borderRadius: 12,
-  },
   wrapper: {
     paddingVertical: 16,
     paddingHorizontal: 8,
   },
-  plantContainer: {
-    width: '100%',
-    gap: 8,
-    padding: 8,
-  },
-  plantHeading: {
-    fontSize: 16,
-    fontWeight: 500,
-    textTransform: 'capitalize',
-    textAlign: 'center',
-  },
-  plantImage: {
-    width: Dimensions.get('window').width * 0.5,
-    height: Dimensions.get('window').height * 0.2,
-    // backgroundColor: 'black',
-    objectFit: 'cover',
-    // borderRadius: 12,
-  },
+
   text: {
     padding: 12,
     borderRadius: 999,

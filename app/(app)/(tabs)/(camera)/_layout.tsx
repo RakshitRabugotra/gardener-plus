@@ -1,7 +1,7 @@
 import StackBackButton from '@/components/navigation/StackBackButton'
 import { Colors } from '@/constants/Colors'
 import { useThemeColor } from '@/hooks/useThemeColor'
-import { Stack } from 'expo-router'
+import { Stack, Tabs } from 'expo-router'
 import { useColorScheme } from 'react-native'
 
 export default function HomeLayout() {
@@ -21,8 +21,8 @@ export default function HomeLayout() {
         },
         headerLeft: () => <StackBackButton />,
       }}
-    >
-      <Stack.Screen name='scan' options={{ headerShown: false }} />
+      >
+      <Stack.Screen name='scan' />
     </Stack>
   )
 }
