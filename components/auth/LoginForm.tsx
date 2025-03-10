@@ -23,11 +23,14 @@ export default function LoginForm() {
   async function handleSignIn() {
     setLoading(true)
     const { session, error } = await signIn({ email, password })
-    // If some error, show the user
-    if (error) Alert.alert(error.message)
     setLoading(false)
+
+    // If some error, show the user
+    if (error) {
+      return Alert.alert(error.message)
+    }
     // If everything's alright, redirect to base url
-    router.replace('/')
+    return router.replace('/')
   }
 
   return (

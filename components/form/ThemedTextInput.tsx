@@ -21,7 +21,7 @@ export default function ThemedTextInput({
   const [borderColor, setBorderColor] = useState<string>(disabledColor)
 
   return (
-    <View>
+    <View style={{ overflow: 'hidden' }}>
       <ThemedText
         style={[
           styles.label,
@@ -74,16 +74,15 @@ export default function ThemedTextInput({
 const styles = StyleSheet.create({
   input: {
     flex: 1,
-    flexGrow: 1,
     fontFamily: 'SpaceMono',
     fontSize: 18,
     paddingVertical: 4,
+    paddingLeft: 8,
     borderBottomWidth: 2,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
   },
   label: {
     fontSize: 16,
