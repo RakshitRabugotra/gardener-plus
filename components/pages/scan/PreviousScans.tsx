@@ -4,6 +4,7 @@ import { ImageCard } from '@/components/ui/ImageCard'
 import { PlantScan } from '@/types/plants'
 import { useEffect, useState } from 'react'
 import { getScans } from '@/service/storage'
+import { Href } from 'expo-router'
 
 export const PreviousScans = () => {
   const [scans, setScans] = useState<PlantScan[]>([])
@@ -52,6 +53,34 @@ export const PreviousScans = () => {
   )
 }
 
-const ScanCard = ({ image, plantCommonName }: PlantScan) => (
-  <ImageCard text={plantCommonName} imageSrc={image} />
+const ScanCard = ({
+  image,
+  plantCommonName,
+  plantScientificName,
+}: PlantScan) => (
+  <ImageCard
+    text={plantCommonName}
+    imageSrc={image}
+    href={
+      plantScientificName
+        ? (('/search?name=' + plantScientificName) as Href)
+        : undefined
+    }
+    styles={{
+      base: {
+        overflow: 'hidden',
+        borderRadius: 12,
+      },
+      image: {
+        aspectRatio: 1,
+        overflow: 'hidden',
+        borderRadius: 12,
+      },
+      text: {
+        maxWidth: '80%',
+        textOverflow: 'wrap',
+        marginHorizontal: 'auto',
+      },
+    }}
+  />
 )

@@ -57,9 +57,16 @@ export const getPlantFromID = async (id: number) => {
     // We've successful data fetch, cast the data to plant
     const plant = data as PlantFromID
 
+    // This is a property fix for the plant
+    // @ts-ignore
+    const careGuides = plant['care-guides']
+    // @ts-ignore
+    delete plant['care-guides']
+
     // Now, store this result to the database
     const { error } = await supabase.from('plants').insert({
       ...plant,
+      care_guides: careGuides,
       dimensions: {
         ...plant.dimensions,
       },
@@ -67,52 +74,6 @@ export const getPlantFromID = async (id: number) => {
         ...plant.default_image,
       },
     })
-    //   id: plant.id,
-    //   common_name: plant.common_name,
-    //   scientific_name: plant.scientific_name,
-    //   other_name: plant.other_name,
-    //   family: plant.family,
-    //   origin: plant.origin,
-    //   type: plant.type,
-    //   dimension: plant.dimension,
-    //   cycle: plant.cycle,
-    //   attracts: plant.attracts,
-    //   propagation: plant.propagation,
-    //   watering: plant.watering,
-    //   plant_anatomy: plant.plant_anatomy,
-    //   sunlight: plant.sunlight,
-    //   pruning_month: plant.pruning_month,
-    //   pruning_count: JSON.stringify(plant.pruning_count),
-    //   seeds: plant.seeds,
-    //   thorny: plant.thorny,
-    //   invasive: plant.invasive,
-    //   tropical: plant.tropical,
-    //   indoor: plant.indoor,
-    //   care_level: plant.care_level,
-    //   flowers: plant.flowers,
-    //   flower_color: plant.flower_color,
-    //   cones: plant.cones,
-    //   fruits: plant.fruits,
-    //   edible_fruit: plant.edible_fruit,
-    //   fruit_color: plant.fruit_color,
-    //   leaf: plant.leaf,
-    //   leaf_color: plant.leaf_color,
-    //   edible_leaf: plant.edible_leaf,
-    //   cuisine: plant.cuisine,
-    //   medicinal: plant.medicinal,
-    //   poisonous_to_humans: plant.poisonous_to_humans,
-    //   poisonous_to_pets: plant.poisonous_to_pets,
-    //   description: plant.description,
-    //   flowering_season: plant.flowering_season || '',
-    //   harvest_season: plant.harvest_season || '',
-    //   maintenance: plant.maintenance || '',
-    //   watering_period: plant.watering || '',
-    //   dimensions_type: plant.dimensions.type || '',
-    //   dimensions_min_value: plant.dimensions.min_value,
-    //   dimensions_max_value: plant.dimensions.max_value,
-    //   dimensions_unit: plant.dimensions.unit,
-    //   default_image: JSON.stringify(plant.default_image),
-    // })
 
     if (error) {
       console.error(

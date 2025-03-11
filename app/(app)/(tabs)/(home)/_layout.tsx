@@ -19,6 +19,7 @@ export default function HomeLayout() {
           color: Colors[colorScheme || 'light'].text,
           fontFamily: 'Display',
         },
+        headerShadowVisible: false,
         headerLeft: () => <StackBackButton />,
       }}
     >

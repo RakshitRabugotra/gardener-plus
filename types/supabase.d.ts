@@ -116,23 +116,31 @@ export type Database = {
       plants: {
         Row: {
           attracts: string[]
-          care_level: string
+          care_guides: string | null
+          care_level: string | null
           common_name: string
           cones: boolean
           cuisine: boolean
           cycle: string
           default_image: Json
+          depth_water_requirement: string[] | null
           description: string
           dimension: string
           dimensions: Json
+          drought_tolerant: boolean | null
           edible_fruit: boolean
+          edible_fruit_taste_profile: string | null
           edible_leaf: boolean
           family: string | null
           flower_color: string
           flowering_season: string | null
           flowers: boolean
           fruit_color: string[] | null
+          fruit_nutritional_value: string | null
           fruits: boolean
+          growth_rate: string | null
+          hardiness: Json | null
+          hardiness_location: Json | null
           harvest_season: string | null
           id: number
           indoor: boolean
@@ -142,41 +150,56 @@ export type Database = {
           maintenance: string | null
           medicinal: boolean
           origin: string[]
+          other_images: string | null
           other_name: string[]
+          pest_susceptibility: string[] | null
+          pest_susceptibility_api: string | null
           plant_anatomy: string[]
-          poisonous_to_humans: number
-          poisonous_to_pets: number
+          poisonous_to_humans: string
+          poisonous_to_pets: string
           propagation: string[]
           pruning_count: string[]
           pruning_month: string[]
+          salt_tolerant: boolean | null
           scientific_name: string[]
-          seeds: number
+          seeds: string
+          soil: string[] | null
           sunlight: string[]
           thorny: boolean
           tropical: boolean
           type: string
+          volume_water_requirement: string[] | null
           watering: string
+          watering_general_benchmark: Json | null
           watering_period: string | null
         }
         Insert: {
           attracts: string[]
-          care_level: string
+          care_guides?: string | null
+          care_level?: string | null
           common_name: string
           cones: boolean
           cuisine: boolean
           cycle: string
           default_image: Json
+          depth_water_requirement?: string[] | null
           description: string
           dimension: string
           dimensions: Json
+          drought_tolerant?: boolean | null
           edible_fruit: boolean
+          edible_fruit_taste_profile?: string | null
           edible_leaf: boolean
           family?: string | null
           flower_color: string
           flowering_season?: string | null
           flowers: boolean
           fruit_color?: string[] | null
+          fruit_nutritional_value?: string | null
           fruits: boolean
+          growth_rate?: string | null
+          hardiness?: Json | null
+          hardiness_location?: Json | null
           harvest_season?: string | null
           id?: number
           indoor: boolean
@@ -186,41 +209,56 @@ export type Database = {
           maintenance?: string | null
           medicinal: boolean
           origin: string[]
+          other_images?: string | null
           other_name: string[]
+          pest_susceptibility?: string[] | null
+          pest_susceptibility_api?: string | null
           plant_anatomy: string[]
-          poisonous_to_humans: number
-          poisonous_to_pets: number
+          poisonous_to_humans: string
+          poisonous_to_pets: string
           propagation: string[]
           pruning_count: string[]
           pruning_month: string[]
+          salt_tolerant?: boolean | null
           scientific_name: string[]
-          seeds: number
+          seeds: string
+          soil?: string[] | null
           sunlight: string[]
           thorny: boolean
           tropical: boolean
           type: string
+          volume_water_requirement?: string[] | null
           watering: string
+          watering_general_benchmark?: Json | null
           watering_period?: string | null
         }
         Update: {
           attracts?: string[]
-          care_level?: string
+          care_guides?: string | null
+          care_level?: string | null
           common_name?: string
           cones?: boolean
           cuisine?: boolean
           cycle?: string
           default_image?: Json
+          depth_water_requirement?: string[] | null
           description?: string
           dimension?: string
           dimensions?: Json
+          drought_tolerant?: boolean | null
           edible_fruit?: boolean
+          edible_fruit_taste_profile?: string | null
           edible_leaf?: boolean
           family?: string | null
           flower_color?: string
           flowering_season?: string | null
           flowers?: boolean
           fruit_color?: string[] | null
+          fruit_nutritional_value?: string | null
           fruits?: boolean
+          growth_rate?: string | null
+          hardiness?: Json | null
+          hardiness_location?: Json | null
           harvest_season?: string | null
           id?: number
           indoor?: boolean
@@ -230,20 +268,27 @@ export type Database = {
           maintenance?: string | null
           medicinal?: boolean
           origin?: string[]
+          other_images?: string | null
           other_name?: string[]
+          pest_susceptibility?: string[] | null
+          pest_susceptibility_api?: string | null
           plant_anatomy?: string[]
-          poisonous_to_humans?: number
-          poisonous_to_pets?: number
+          poisonous_to_humans?: string
+          poisonous_to_pets?: string
           propagation?: string[]
           pruning_count?: string[]
           pruning_month?: string[]
+          salt_tolerant?: boolean | null
           scientific_name?: string[]
-          seeds?: number
+          seeds?: string
+          soil?: string[] | null
           sunlight?: string[]
           thorny?: boolean
           tropical?: boolean
           type?: string
+          volume_water_requirement?: string[] | null
           watering?: string
+          watering_general_benchmark?: Json | null
           watering_period?: string | null
         }
         Relationships: []

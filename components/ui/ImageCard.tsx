@@ -30,9 +30,9 @@ export interface ImageCardProps {
 
 export const ImageCard = ({
   text,
-  href,
   imageSrc,
   styles,
+  href = undefined,
   fallbackSrc = Images.splashLogo,
 }: ImageCardProps) => {
   // Get the colorscheme
