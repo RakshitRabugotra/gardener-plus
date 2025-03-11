@@ -24,5 +24,5 @@ jobs:
       - name: 📦 Install dependencies (no cache)
         run: yarn install --no-cache
 
-      - name: 🚀 Create update
-        run: eas update --auto --non-interactive
+      - name: 🚀 Build app
+        run: eas build --non-interactive
