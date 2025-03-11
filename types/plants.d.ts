@@ -30,15 +30,15 @@ export interface PlantOverview {
 /**
  * The interface that is returned when searching for a plant
  */
-// export interface PlantList {
-//   data: PlantOverview[]
-//   to: number
-//   per_page: number
-//   current_page: number
-//   from: number
-//   last_page: number
-//   total: number
-// }
+export interface PlantList {
+  data: PlantOverview[]
+  to: number
+  per_page: number
+  current_page: number
+  from: number
+  last_page: number
+  total: number
+}
 
 /**
  * The details of the specific plant from id

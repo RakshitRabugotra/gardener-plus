@@ -2,7 +2,7 @@
 import { PlantCareConditions, PlantFromID, PlantList } from '@/types/plants'
 import { getPlantationConditions as plantationConditions } from './gemini'
 import { supabase } from './supabase'
-import { Tables } from '@/types/supabase-old'
+import { Tables } from '@/types/supabase'
 
 // Environment Variables
 const BASE_URL = process.env.EXPO_PUBLIC_PERENUAL_BASE_URL
@@ -59,52 +59,60 @@ export const getPlantFromID = async (id: number) => {
 
     // Now, store this result to the database
     const { error } = await supabase.from('plants').insert({
-      id: plant.id,
-      common_name: plant.common_name,
-      scientific_name: plant.scientific_name,
-      other_name: plant.other_name,
-      family: plant.family,
-      origin: plant.origin,
-      type: plant.type,
-      dimension: plant.dimension,
-      cycle: plant.cycle,
-      attracts: plant.attracts,
-      propagation: plant.propagation,
-      watering: plant.watering,
-      plant_anatomy: plant.plant_anatomy,
-      sunlight: plant.sunlight,
-      pruning_month: plant.pruning_month,
-      pruning_count: JSON.stringify(plant.pruning_count),
-      seeds: plant.seeds,
-      thorny: plant.thorny,
-      invasive: plant.invasive,
-      tropical: plant.tropical,
-      indoor: plant.indoor,
-      care_level: plant.care_level,
-      flowers: plant.flowers,
-      flower_color: plant.flower_color,
-      cones: plant.cones,
-      fruits: plant.fruits,
-      edible_fruit: plant.edible_fruit,
-      fruit_color: plant.fruit_color,
-      leaf: plant.leaf,
-      leaf_color: plant.leaf_color,
-      edible_leaf: plant.edible_leaf,
-      cuisine: plant.cuisine,
-      medicinal: plant.medicinal,
-      poisonous_to_humans: plant.poisonous_to_humans,
-      poisonous_to_pets: plant.poisonous_to_pets,
-      description: plant.description,
-      flowering_season: plant.flowering_season || '',
-      harvest_season: plant.harvest_season || '',
-      maintenance: plant.maintenance || '',
-      watering_period: plant.watering || '',
-      dimensions_type: plant.dimensions.type || '',
-      dimensions_min_value: plant.dimensions.min_value,
-      dimensions_max_value: plant.dimensions.max_value,
-      dimensions_unit: plant.dimensions.unit,
-      default_image: JSON.stringify(plant.default_image),
+      ...plant,
+      dimensions: {
+        ...plant.dimensions,
+      },
+      default_image: {
+        ...plant.default_image,
+      },
     })
+    //   id: plant.id,
+    //   common_name: plant.common_name,
+    //   scientific_name: plant.scientific_name,
+    //   other_name: plant.other_name,
+    //   family: plant.family,
+    //   origin: plant.origin,
+    //   type: plant.type,
+    //   dimension: plant.dimension,
+    //   cycle: plant.cycle,
+    //   attracts: plant.attracts,
+    //   propagation: plant.propagation,
+    //   watering: plant.watering,
+    //   plant_anatomy: plant.plant_anatomy,
+    //   sunlight: plant.sunlight,
+    //   pruning_month: plant.pruning_month,
+    //   pruning_count: JSON.stringify(plant.pruning_count),
+    //   seeds: plant.seeds,
+    //   thorny: plant.thorny,
+    //   invasive: plant.invasive,
+    //   tropical: plant.tropical,
+    //   indoor: plant.indoor,
+    //   care_level: plant.care_level,
+    //   flowers: plant.flowers,
+    //   flower_color: plant.flower_color,
+    //   cones: plant.cones,
+    //   fruits: plant.fruits,
+    //   edible_fruit: plant.edible_fruit,
+    //   fruit_color: plant.fruit_color,
+    //   leaf: plant.leaf,
+    //   leaf_color: plant.leaf_color,
+    //   edible_leaf: plant.edible_leaf,
+    //   cuisine: plant.cuisine,
+    //   medicinal: plant.medicinal,
+    //   poisonous_to_humans: plant.poisonous_to_humans,
+    //   poisonous_to_pets: plant.poisonous_to_pets,
+    //   description: plant.description,
+    //   flowering_season: plant.flowering_season || '',
+    //   harvest_season: plant.harvest_season || '',
+    //   maintenance: plant.maintenance || '',
+    //   watering_period: plant.watering || '',
+    //   dimensions_type: plant.dimensions.type || '',
+    //   dimensions_min_value: plant.dimensions.min_value,
+    //   dimensions_max_value: plant.dimensions.max_value,
+    //   dimensions_unit: plant.dimensions.unit,
+    //   default_image: JSON.stringify(plant.default_image),
+    // })
 
     if (error) {
       console.error(
@@ -127,13 +135,11 @@ export const getPlantFromID = async (id: number) => {
   return {
     ...plant,
     dimensions: {
-      type: plant.dimensions_type,
-      min_value: plant.dimensions_min_value,
-      max_value: plant.dimensions_max_value,
-      unit: plant.dimensions_unit,
+      ...(plant.dimensions as any),
     },
-    pruning_count: JSON.parse(plant.pruning_count),
-    default_image: JSON.parse(plant.default_image),
+    default_image: {
+      ...(plant.default_image as any),
+    },
   } as PlantFromID
 }
 
@@ -146,7 +152,7 @@ export const getPlantationConditions = async (
 
   // Fetch the data from the supabase for the given id,
   const { data, error } = await supabase
-    .from('plant_care')
+    .from('plant_care_conditions')
     .select('*')
     .eq('id', id)
     .single()
@@ -159,8 +165,8 @@ export const getPlantationConditions = async (
     if (!conditions) return null
 
     // Else, store the result in supabase
-    const { error } = await supabase.from('plant_care').insert({
-      ...(conditions as Tables<'plant_care'>),
+    const { error } = await supabase.from('plant_care_conditions').insert({
+      ...conditions,
       id: id,
     })
 
