@@ -16,16 +16,16 @@ export interface PlantImage {
 // /**
 //  * The Plant overview from the plant list
 //  */
-// export interface PlantOverview {
-//   id: number
-//   common_name: string
-//   scientific_name: string[]
-//   other_name: string[]
-//   cycle: 'Annual' | 'Biennial' | 'Perennial' | string
-//   watering: string
-//   sunlight: []
-//   default_image: PlantImage
-// }
+export interface PlantOverview {
+  id: number
+  common_name: string
+  scientific_name: string[]
+  other_name: string[]
+  cycle: 'Annual' | 'Biennial' | 'Perennial' | string
+  watering: string
+  sunlight: []
+  default_image: PlantImage
+}
 
 /**
  * The interface that is returned when searching for a plant
