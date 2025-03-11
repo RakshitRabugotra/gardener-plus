@@ -8,6 +8,7 @@ import {
   TextStyle,
   TouchableOpacity,
   useColorScheme,
+  View,
   ViewStyle,
 } from 'react-native'
 import { ThemedView } from './ThemedView'
@@ -16,11 +17,14 @@ import { Href, router } from 'expo-router'
 import Images from '@/constants/Images'
 import { ThemedText } from './ThemedText'
 
-export interface ImageCardProps {
+interface ImageCardDataProps {
   text: string
   href?: Href
   imageSrc?: string
   fallbackSrc?: any
+}
+
+interface ImageCardStyleProps {
   styles?: {
     base?: ViewStyle
     image?: ImageStyle
@@ -28,11 +32,20 @@ export interface ImageCardProps {
   }
 }
 
+export interface ImageCardProps
+  extends ImageCardDataProps,
+    ImageCardStyleProps {
+  horizontal?: boolean
+  endContent?: React.ReactNode
+}
+
 export const ImageCard = ({
   text,
   imageSrc,
   styles,
+  endContent,
   href = undefined,
+  horizontal = false,
   fallbackSrc = Images.splashLogo,
 }: ImageCardProps) => {
   // Get the colorscheme
@@ -53,15 +66,21 @@ export const ImageCard = ({
           borderColor:
             colorScheme === 'dark' ? Colors.light.tabIconDefault : '#000',
         },
+        horizontal && stylesheet?.baseHorizontal,
         styles?.base,
       ]}
     >
       <TouchableOpacity
         onPress={() => href && router.push(href)}
-        style={stylesheet.touchable}
+        style={
+          horizontal ? stylesheet.touchableHorizontal : stylesheet.touchable
+        }
       >
         <Image
-          style={[stylesheet.image, styles?.image]}
+          style={[
+            horizontal ? stylesheet.imageHorizontal : stylesheet.image,
+            styles?.image,
+          ]}
           source={
             hasThumbnail
               ? {
@@ -70,8 +89,18 @@ export const ImageCard = ({
               : fallbackSrc
           }
         />
-        <ThemedText style={[stylesheet.text, styles?.text]}>{text}</ThemedText>
+        <View style={{ maxWidth: '100%', flexWrap: 'wrap' }}>
+          <ThemedText
+            style={[
+              horizontal ? stylesheet.textHorizontal : stylesheet.text,
+              styles?.text,
+            ]}
+          >
+            {text}
+          </ThemedText>
+        </View>
       </TouchableOpacity>
+      {endContent}
     </ThemedView>
   )
 }
@@ -94,6 +123,36 @@ const stylesheet = StyleSheet.create({
   image: {
     width: Dimensions.get('window').width * 0.5,
     height: Dimensions.get('window').height * 0.2,
+    objectFit: 'cover',
+  },
+  // The horizontal variants
+  baseHorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderRadius: 12,
+    elevation: 1,
+  },
+  touchableHorizontal: {
+    gap: 12,
+    padding: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  textHorizontal: {
+    fontSize: 18,
+    fontFamily: 'Display',
+    fontWeight: 500,
+    textTransform: 'capitalize',
+    textAlign: 'left',
+    maxWidth: '50%',
+    // width: '100%',
+  },
+  imageHorizontal: {
+    width: 90,
+    height: 90,
+    aspectRatio: 1,
     objectFit: 'cover',
   },
 })
