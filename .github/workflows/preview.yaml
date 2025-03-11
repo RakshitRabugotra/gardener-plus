@@ -2,6 +2,11 @@ on: [pull_request]
 jobs:
   preview:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # Allows writing to the repo (required for EAS updates)
+      pull-requests: write   # Allows commenting and updating the PR with EAS info
+
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v3
