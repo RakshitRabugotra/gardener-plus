@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Image,
   StyleSheet,
@@ -27,25 +27,21 @@ export default function Search() {
 
   const [plants, setPlants] = useState<PlantOverview[] | null>(null)
   const [refresh, setRefresh] = useState<number>(0)
+
   // Get the search name whenever the local search params changes
   const searchName = useMemo(
     () =>
-      typeof local.name === 'undefined' ? undefined : (local.name as string),
+      typeof local?.name === 'undefined' ? undefined : (local.name as string),
     [local]
   )
-
-  // Get the matching plants with the given name
-  const getMatchingPlants = async () => {
-    getPlantList(searchName!).then((value) =>
-      value ? setPlants(value.data) : null
-    )
-  }
 
   useEffect(() => {
     if (!searchName) return
     if (typeof searchName === 'undefined') return
     // Else, search the plant
-    getMatchingPlants()
+    getPlantList(searchName!).then((value) =>
+      value ? setPlants(value.data) : null
+    )
   }, [searchName])
 
   return (
@@ -76,7 +72,7 @@ function PlantList({
         renderItem={({ item }) => <PlantCard {...item} />}
         keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={() => <ThemedText>No result found...</ThemedText>}
-        ListFooterComponent={() => <View style={{ paddingBottom: 216 }} />}
+        ListFooterComponent={() => <View style={{ paddingBottom: 250 }} />}
         onRefresh={() => setRefresh((prev) => ++prev)}
         //if set to true, the UI will show a loading indicator
         refreshing={false}

@@ -16,81 +16,102 @@ export interface PlantImage {
 // /**
 //  * The Plant overview from the plant list
 //  */
-// export interface PlantOverview {
-//   id: number
-//   common_name: string
-//   scientific_name: string[]
-//   other_name: string[]
-//   cycle: 'Annual' | 'Biennial' | 'Perennial' | string
-//   watering: string
-//   sunlight: []
-//   default_image: PlantImage
-// }
+export interface PlantOverview {
+  id: number
+  common_name: string
+  scientific_name: string[]
+  other_name: string[]
+  cycle: 'Annual' | 'Biennial' | 'Perennial' | string
+  watering: string
+  sunlight: []
+  default_image: PlantImage
+}
 
 /**
  * The interface that is returned when searching for a plant
  */
-// export interface PlantList {
-//   data: PlantOverview[]
-//   to: number
-//   per_page: number
-//   current_page: number
-//   from: number
-//   last_page: number
-//   total: number
-// }
+export interface PlantList {
+  data: PlantOverview[]
+  to: number
+  per_page: number
+  current_page: number
+  from: number
+  last_page: number
+  total: number
+}
 
 /**
  * The details of the specific plant from id
  */
 export interface PlantFromID {
-  id: number
+  attracts: string[]
+  care_guides: string | null
+  care_level: string | null
   common_name: string
-  scientific_name: string[]
-  other_name: string[]
-  family: string | null
-  origin: string[]
-  type: string
+  cones: boolean
+  cuisine: boolean
+  cycle: string
+  default_image: PlantImage
+  depth_water_requirement: string[] | null
+  description: string
   dimension: string
   dimensions: {
-    type: 'Height' | string
-    min_value: number
     max_value: number
-    unit: 'feet' | string
+    min_value: number
+    type: any | null
+    unit: string
   }
-  cycle: 'Annual' | 'Biennial' | 'Perennial' | string
-  attracts: string[]
-  propagation: string[]
-  watering: string
-  watering_period: string | null
-  plant_anatomy: string[]
-  sunlight: string[]
-  pruning_month: string[]
-  pruning_count: string[]
-  seeds: number
-  maintenance: string | null
-  thorny: boolean
-  invasive: boolean
-  tropical: boolean
-  indoor: boolean
-  care_level: 'Medium' | string
-  flowers: boolean
-  flowering_season: string | null
-  flower_color: string
-  cones: boolean
-  fruits: boolean
+  drought_tolerant: boolean | null
   edible_fruit: boolean
+  edible_fruit_taste_profile: string | null
+  edible_leaf: boolean
+  family: string | null
+  flower_color: string
+  flowering_season: string | null
+  flowers: boolean
   fruit_color: string[] | null
+  fruit_nutritional_value: string | null
+  fruits: boolean
+  growth_rate: string | null
+  hardiness: {
+    max: string
+    min: string
+  } | null
+  hardiness_location: {
+    full_iframe: string
+    full_url: string
+  } | null
   harvest_season: string | null
+  id: number
+  indoor: boolean
+  invasive: boolean
   leaf: boolean
   leaf_color: string[]
-  edible_leaf: boolean
-  cuisine: boolean
+  maintenance: string | null
   medicinal: boolean
-  poisonous_to_humans: number
-  poisonous_to_pets: number
-  description: string
-  default_image: PlantImage
+  origin: string[]
+  other_images: string | null
+  other_name: string[]
+  pest_susceptibility: string[] | null
+  pest_susceptibility_api: string | null
+  plant_anatomy: string[]
+  poisonous_to_humans: string
+  poisonous_to_pets: string
+  propagation: string[]
+  pruning_count: string[]
+  pruning_month: string[]
+  salt_tolerant: boolean | null
+  scientific_name: string[]
+  seeds: string
+  soil: string[] | null
+  sunlight: string[]
+  thorny: boolean
+  tropical: boolean
+  type: string
+  volume_water_requirement: string[] | null
+  watering: string
+  watering_general_benchmark: { unit: string; value: any | null } | null
+  watering_period: string | null
 }
 
 /**

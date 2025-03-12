@@ -79,7 +79,10 @@ export default function Scan() {
       if (!plantDescription) return
       // Save the new photo to the async storage
       saveScan({
-        id: picture?.base64!,
+        id:
+          picture?.base64! ??
+          picture?.uri ??
+          plantDescription.plantScientificName!,
         image: picture?.uri!,
         plantCommonName: plantDescription.plantScientificName!,
         isPlant: plantDescription.isPlant!,
@@ -94,7 +97,11 @@ export default function Scan() {
         <Camera getPicture={getPicture} />
       </View>
       <PaddedView style={{ paddingBottom: 250 }}>
-        <PlantDescriptionPreview picture={picture} description={pictureDesc} />
+        <PlantDescriptionPreview
+          picture={picture}
+          description={pictureDesc}
+          onResultPress={() => setPicture(undefined)}
+        />
       </PaddedView>
     </ThemedScrollView>
   )
@@ -103,9 +110,11 @@ export default function Scan() {
 const PlantDescriptionPreview = ({
   picture,
   description,
+  onResultPress,
 }: {
   picture?: CameraCapturedPicture
   description: PlantDescription | null
+  onResultPress: () => void
 }) => {
   // For color and themes
   const tint = useThemeColor({}, 'tint')
@@ -130,7 +139,7 @@ const PlantDescriptionPreview = ({
         {!description ? (
           <LoadingFallback />
         ) : (
-          <SearchResult description={description} />
+          <SearchResult description={description} onPress={onResultPress} />
         )}
       </ThemedView>
     </View>
@@ -148,7 +157,13 @@ const LoadingFallback = () => {
   )
 }
 
-const SearchResult = ({ description }: { description: PlantDescription }) => {
+const SearchResult = ({
+  description,
+  onPress,
+}: {
+  description: PlantDescription
+  onPress: () => void
+}) => {
   return (
     <>
       {!description.isPlant ? (
@@ -164,6 +179,7 @@ const SearchResult = ({ description }: { description: PlantDescription }) => {
           </ThemedText>
           <GotoPlant
             href={('/search?name=' + description.plantScientificName) as Href}
+            onReroute={onPress}
           />
         </View>
       )}
@@ -171,12 +187,21 @@ const SearchResult = ({ description }: { description: PlantDescription }) => {
   )
 }
 
-const GotoPlant = ({ href }: { href: Href }) => {
+const GotoPlant = ({
+  href,
+  onReroute,
+}: {
+  href: Href
+  onReroute: () => void
+}) => {
   const tint = useThemeColor({}, 'tint')
 
   return (
     <TouchableOpacity
-      onPress={() => router.push(href)}
+      onPress={() => {
+        onReroute()
+        router.push(href)
+      }}
       style={{
         backgroundColor: 'black',
         borderRadius: 16,
