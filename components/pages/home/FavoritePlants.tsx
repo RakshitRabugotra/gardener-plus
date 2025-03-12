@@ -1,24 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  ImageStyle,
-  StyleSheet,
-  TextStyle,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-  ViewStyle,
-} from 'react-native'
-import { Href, router, usePathname } from 'expo-router'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Text } from '@rneui/themed'
 import { Ionicons } from '@expo/vector-icons'
 
-// Internal Components
-import { ThemedView } from '@/components/ui/ThemedView'
-import { ThemedText } from '@/components/ui/ThemedText'
+// Custom Components
+import { Section } from '@/components/Section'
+import { ImageCard, ImageCardProps } from '@/components/ui/ImageCard'
 
-// Custom Hooks
+// Hooks
+import { usePathname } from 'expo-router'
 import useSession from '@/hooks/useSession'
 import { useThemeColor } from '@/hooks/useThemeColor'
 
@@ -28,31 +18,13 @@ import {
   isPlantFavorite,
   toggleFavorite,
 } from '@/lib/plants'
-import { checkThumbnail } from '@/lib/util'
 
 // Type definitions
 import { PlantFromID } from '@/types/plants'
 
 // Constants
-import { Colors } from '@/constants/Colors'
 import Images from '@/constants/Images'
-import { Text } from '@rneui/themed'
-import { Section } from '@/components/Section'
-import { ImageCard } from '@/components/ui/ImageCard'
-
-const heartColor = '#f04945'
-
-type DummyPlantType = {
-  id: string
-  common_name: string
-  default_image?: string
-}
-const DUMMY_PLANTS: DummyPlantType[] = [
-  { id: '1', common_name: 'rosa indica', default_image: undefined },
-  { id: '2', common_name: 'mangiferra indica', default_image: undefined },
-  { id: '3', common_name: 'silver white fur', default_image: undefined },
-  { id: '4', common_name: 'rose', default_image: undefined },
-]
+import { Colors } from '@/constants/Colors'
 
 export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
   // Get the current user
@@ -67,6 +39,15 @@ export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
   // Check if the plant is already added by the user
   const [isFavorite, setFavorite] = useState<boolean | null>(null)
 
+  const handleToggle = useCallback(() => {
+    // If the plant is null, then there's no favorite
+    if (!plant) return setFavorite(false)
+    // Else, set what's the new favorite
+    toggleFavorite(plant.id, session.user.id, !isFavorite).then((value) =>
+      setFavorite(value)
+    )
+  }, [plant, toggleFavorite, setFavorite, session, isFavorite])
+
   useEffect(() => {
     // If the plant is null, return false
     if (!plant) return
@@ -75,15 +56,6 @@ export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
       setFavorite(value)
     )
   }, [plant])
-
-  const handleToggle = () => {
-    // If the plant is null, then there's no favorite
-    if (!plant) return setFavorite(false)
-    // Else, set what's the new favorite
-    toggleFavorite(plant.id, session.user.id, !isFavorite).then((value) =>
-      setFavorite(value)
-    )
-  }
 
   return (
     <TouchableOpacity style={stylesheet.wrapper} onPress={() => handleToggle()}>
@@ -99,7 +71,7 @@ export function AddFavorite({ plant }: { plant: PlantFromID | null }) {
             isFavorite === null
               ? backgroundColor
               : isFavorite
-              ? heartColor
+              ? Colors.more.heartRed
               : backgroundColor
           }
           size={24}
@@ -121,46 +93,40 @@ export const FavoritePlants = () => {
   // Check the pathname, to refresh the favorites
   const pathname = usePathname()
 
-  // Fetch all the favorites of the user
-  const [favorites, setFavorites] = useState<any[] | null>(null)
+  // State Variables
+  const [favorites, setFavorites] = useState<PlantFromID[] | null>(null)
+  const [isLoading, setLoading] = useState(false)
 
+  // Fetch all the favorites of the user
   useEffect(() => {
-    // getFavoritePlants(session.user.id).then((value) => setFavorites(value))
+    setLoading(true)
+    getFavoritePlants(session.user.id)
+      .then((value) => setFavorites(value))
+      .catch((err) =>
+        console.error('Error while fetching favorites in FavoritePlants: ', err)
+      )
+      .finally(() => setLoading(false))
   }, [pathname])
 
   return (
     <Section title='My Garden'>
-      <FlatList
-        horizontal
-        data={favorites}
-        renderItem={({ item }) => <PlantCard {...item} />}
-        keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={() => (
-          <PlantCard
-            href='/search'
-            common_name='Search plants to add'
-            id='0'
-            fallbackRes={Images.addIcon}
-            styles={{
-              text: {
-                paddingHorizontal: 16,
-                fontSize: 14,
-                maxWidth: 150,
-                textOverflow: 'wrap',
-              },
-              image: {
-                width: 50,
-                height: 50,
-                margin: 30,
-                marginHorizontal: 'auto',
-              },
-            }}
+      <View style={{ marginVertical: 12 }}>
+        {isLoading ? (
+          <LoadingFallback />
+        ) : (
+          <FlatList
+            horizontal
+            data={favorites}
+            renderItem={({ item }) => (
+              <PlantCard {...item} text={item.common_name} />
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={<EmptyFallback />}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 16 }}
           />
         )}
-        showsHorizontalScrollIndicator={false}
-        style={{ marginVertical: 12 }}
-        contentContainerStyle={{ gap: 16 }}
-      />
+      </View>
     </Section>
   )
 }
@@ -170,30 +136,60 @@ export const FavoritePlants = () => {
  */
 export const PlantCard = ({
   id,
+  href,
   scientific_name,
   common_name,
   default_image,
-  fallbackRes,
-  styles,
-  ...props
-}: any) => {
+  ...rest
+}: Partial<PlantFromID> & ImageCardProps) => {
   // Now get the fields of the image
   const image = useMemo(() => {
-    try {
-      return JSON.parse(default_image)
-    } catch (error) {
-      return undefined
-    }
+    return default_image?.thumbnail ?? '#'
   }, [default_image])
 
   return (
     <ImageCard
-      text={common_name}
-      imageSrc={image?.thumbnail}
-      href={`/${id}`}
-      fallbackSrc={fallbackRes}
-      styles={styles}
+      {...rest}
+      imageSrc={image}
+      href={id && id >= 0 ? `/${id}` : href}
+      styles={cardStyles}
     />
+  )
+}
+
+const EmptyFallback = () => (
+  <PlantCard
+    href='/search'
+    text='Search plants to add'
+    id={-1}
+    fallbackSrc={Images.addIcon}
+    styles={cardStyles}
+  />
+)
+
+const LoadingFallback = () => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        width: '100%',
+        borderRadius: 12,
+      }}
+    >
+      <PlantCard
+        isLoading
+        text='Loading...'
+        loadingStyles={{
+          base: {
+            borderRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexBasis: '25%',
+            aspectRatio: 1,
+          },
+        }}
+      />
+    </View>
   )
 }
 
@@ -207,5 +203,22 @@ const stylesheet = StyleSheet.create({
     padding: 12,
     borderRadius: 999,
     aspectRatio: 1,
+  },
+})
+
+const cardStyles = StyleSheet.create({
+  base: {
+    overflow: 'hidden',
+    borderRadius: 12,
+  },
+  image: {
+    aspectRatio: 1,
+    overflow: 'hidden',
+    borderRadius: 12,
+  },
+  text: {
+    maxWidth: '80%',
+    textOverflow: 'wrap',
+    marginHorizontal: 'auto',
   },
 })
