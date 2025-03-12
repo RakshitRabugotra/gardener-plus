@@ -13,18 +13,22 @@ import { Slot } from 'expo-router'
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  const [loaded] = useFonts()
+  // const [loaded] = useFonts()
 
   /* For hiding Splashscreen till fonts load */
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync()
-    }
-  }, [loaded])
+  // useEffect(() => {
+  //   if (loaded) {
+  //     SplashScreen.hideAsync()
+  //   }
+  // }, [loaded])
 
-  if (!loaded) {
-    return null
-  }
+  // if (!loaded) {
+  //   return null
+  // }
+
+  useEffect(() => {
+    SplashScreen.hideAsync()
+  }, [])
 
   return (
     <SessionProvider>

@@ -5,6 +5,9 @@
   "scripts": {
     "start": "expo start",
     "prebuild": "expo prebuild",
+    "clear-cache": "expo start -c",
+    "build-android": "expo build:android",
+    "build-ios": "expo build:ios",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
