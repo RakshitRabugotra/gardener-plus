@@ -1,6 +1,7 @@
 import { checkThumbnail } from '@/lib/util'
 import { useMemo } from 'react'
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ImageStyle,
@@ -30,6 +31,10 @@ interface ImageCardStyleProps {
     image?: ImageStyle
     text?: TextStyle
   }
+  loadingStyles?: {
+    base?: ViewStyle
+    indicator?: ViewStyle
+  }
 }
 
 export interface ImageCardProps
@@ -37,16 +42,20 @@ export interface ImageCardProps
     ImageCardStyleProps {
   horizontal?: boolean
   endContent?: React.ReactNode
+  isLoading?: boolean
+  LoadingFallbackComponent?: typeof LoadingFallback
 }
 
 export const ImageCard = ({
-  text,
   imageSrc,
   styles,
-  endContent,
   href = undefined,
   horizontal = false,
+  isLoading = false,
+  LoadingFallbackComponent = LoadingFallback,
   fallbackSrc = Images.splashLogo,
+  loadingStyles,
+  ...rest
 }: ImageCardProps) => {
   // Get the colorscheme
   const colorScheme = useColorScheme()
@@ -70,6 +79,37 @@ export const ImageCard = ({
         styles?.base,
       ]}
     >
+      {isLoading ? (
+        <LoadingFallbackComponent loadingStyles={loadingStyles} />
+      ) : (
+        <MainContent
+          {...rest}
+          href={href}
+          horizontal={horizontal}
+          styles={styles}
+          hasThumbnail={hasThumbnail}
+          imageSrc={imageSrc}
+          fallbackSrc={fallbackSrc}
+        />
+      )}
+    </ThemedView>
+  )
+}
+
+const MainContent = ({
+  href,
+  horizontal,
+  styles,
+  hasThumbnail,
+  imageSrc,
+  fallbackSrc,
+  text,
+  endContent,
+}: {
+  hasThumbnail: boolean
+} & Partial<ImageCardProps>) => {
+  return (
+    <>
       <TouchableOpacity
         onPress={() => href && router.push(href)}
         style={
@@ -101,7 +141,15 @@ export const ImageCard = ({
         </View>
       </TouchableOpacity>
       {endContent}
-    </ThemedView>
+    </>
+  )
+}
+
+const LoadingFallback = ({ loadingStyles }: {loadingStyles?: ImageCardStyleProps['loadingStyles']}) => {
+  return (
+    <View style={loadingStyles?.base}>
+      <ActivityIndicator size='small' color={Colors.dark.tabIconDefault} style={loadingStyles?.indicator} />
+    </View>
   )
 }
 

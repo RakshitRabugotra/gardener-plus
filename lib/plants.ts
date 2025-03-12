@@ -8,6 +8,48 @@ import { Tables } from '@/types/supabase'
 const BASE_URL = process.env.EXPO_PUBLIC_PERENUAL_BASE_URL
 const API_KEY = process.env.EXPO_PUBLIC_PERENUAL_API_KEY
 
+// Utility to convert object from one interface to another
+export const convertPlantFromID2TablePlant = (plantFromId: PlantFromID): Tables<'plants'> => {
+  // This is a property fix for the plant
+  // @ts-ignore
+  const careGuides = plant['care-guides']
+  // @ts-ignore
+  delete plant['care-guides']
+
+  return {
+    ...plantFromId,
+    care_guides: careGuides,
+    dimensions: {
+      ...plantFromId.dimensions,
+    },
+    default_image: {
+      ...plantFromId.default_image,
+    },
+  }
+}
+
+// Utility to convert object from one interface to another
+export const convertTablePlant2PlantFromID = (plantFromId: Tables<'plants'>): PlantFromID  => {
+  return {
+    ...plantFromId,
+    dimensions: {
+      ...(plantFromId.dimensions as any),
+    },
+    default_image: {
+      ...(plantFromId.default_image as any),
+    },
+    hardiness_location: {
+      ...(plantFromId.hardiness_location as any),
+    },
+    hardiness: {
+      ...(plantFromId.hardiness as any)
+    },
+    watering_general_benchmark: {
+      ...(plantFromId.watering_general_benchmark) as any
+    }
+  }
+}
+
 // To search for a particular plant
 export const getPlantList = async (plantName: string) => {
   // Send a HTTP request
@@ -27,7 +69,7 @@ export const getPlantList = async (plantName: string) => {
 }
 
 // To search for a plant with it's id
-export const getPlantFromID = async (id: number) => {
+export const getPlantFromID = async (id: number): Promise<PlantFromID | null> => {
   // Fetch the result from the 'plants' table if the result is present, then return it
   const { data: plant, error } = await supabase
     .from('plants')
@@ -57,23 +99,10 @@ export const getPlantFromID = async (id: number) => {
     // We've successful data fetch, cast the data to plant
     const plant = data as PlantFromID
 
-    // This is a property fix for the plant
-    // @ts-ignore
-    const careGuides = plant['care-guides']
-    // @ts-ignore
-    delete plant['care-guides']
-
     // Now, store this result to the database
-    const { error } = await supabase.from('plants').insert({
-      ...plant,
-      care_guides: careGuides,
-      dimensions: {
-        ...plant.dimensions,
-      },
-      default_image: {
-        ...plant.default_image,
-      },
-    })
+    const { error } = await supabase.from('plants').insert(
+      convertPlantFromID2TablePlant(plant)
+    )
 
     if (error) {
       console.error(
@@ -93,15 +122,7 @@ export const getPlantFromID = async (id: number) => {
   }
 
   // Else, return the fetched plant, with no errors
-  return {
-    ...plant,
-    dimensions: {
-      ...(plant.dimensions as any),
-    },
-    default_image: {
-      ...(plant.default_image as any),
-    },
-  } as PlantFromID
+  return convertTablePlant2PlantFromID(plant)
 }
 
 export const getPlantationConditions = async (
@@ -162,7 +183,7 @@ export const isPlantFavorite = async (plant_id: number, user_id: string) => {
 /**
  * Get all the favorite plants of the user
  */
-export const getFavoritePlants = async (user_id: string) => {
+export const getFavoritePlants = async (user_id: string): Promise<PlantFromID[] | null> => {
   const { data, error } = await supabase
     .from('favorite_plants')
     .select(`plant_id, plants (*)`)
@@ -173,7 +194,7 @@ export const getFavoritePlants = async (user_id: string) => {
     return null
   }
   // Modify the data to show only the plants
-  return data.map((item) => item.plants) as Tables<'plants'>[]
+  return data.map((item) => convertTablePlant2PlantFromID(item.plants))
 }
 
 /**
