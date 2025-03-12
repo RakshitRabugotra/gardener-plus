@@ -99,6 +99,12 @@ export const getPlantFromID = async (id: number): Promise<PlantFromID | null> =>
     // We've successful data fetch, cast the data to plant
     const plant = data as PlantFromID
 
+    // This is a property fix for the plant
+    // @ts-ignore
+    const careGuides = plant['care-guides']
+    // @ts-ignore
+    delete plant['care-guides']
+
     // Now, store this result to the database
     const { error } = await supabase.from('plants').insert(
       convertPlantFromID2TablePlant(plant)

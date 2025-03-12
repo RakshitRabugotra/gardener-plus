@@ -46,6 +46,13 @@ export interface ImageCardProps
   LoadingFallbackComponent?: typeof LoadingFallback
 }
 
+export interface ImageCardProps
+  extends ImageCardDataProps,
+    ImageCardStyleProps {
+  horizontal?: boolean
+  endContent?: React.ReactNode
+}
+
 export const ImageCard = ({
   imageSrc,
   styles,
