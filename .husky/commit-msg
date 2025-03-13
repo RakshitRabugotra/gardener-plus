@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Spell check commit message
+npx --no-install cspell --no-summary --no-color "$1"
+if [ $? -ne 0 ]; then
+  echo "❌ Spell check failed!"
+  exit 1
+fi
+
+# Lint commit message format
+npx --no-install commitlint --edit "$1"
