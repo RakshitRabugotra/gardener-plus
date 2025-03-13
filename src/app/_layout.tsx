@@ -1,6 +1,5 @@
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
-import 'react-native-reanimated'
 
 // Custom hooks and contexts
 import { useFonts } from '@/hooks/useFonts'

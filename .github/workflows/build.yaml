@@ -22,8 +22,8 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies (no cache)
-        run: npm install --no-cache
+      - name: 📦 Install dependencies
+        run: npm install
 
       - name: 🚀 Build app
         run: eas build --platform android --non-interactive --profile production

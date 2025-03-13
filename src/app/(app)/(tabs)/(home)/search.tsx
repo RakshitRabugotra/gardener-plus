@@ -22,6 +22,7 @@ import { checkThumbnail } from '@/lib/util'
 // Type definitions
 import { PlantOverview } from '@/types/plants'
 import { Colors } from '@/constants/Colors'
+import Images from '@/constants/Images'
 
 export default function Search() {
   // Use the local search params to get the name of the plant if any
@@ -124,7 +125,7 @@ const PlantCard = ({
               ? {
                   uri: default_image.thumbnail,
                 }
-              : require('@/assets/images/splash-logo.png')
+              : Images.splashLogo
           }
         />
       </View>
