@@ -18,7 +18,6 @@ export const supabase = createClient<Database>(
       storage: AsyncStorage,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false,
     },
   }
 )
