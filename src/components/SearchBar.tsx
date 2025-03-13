@@ -51,6 +51,7 @@ export function SearchBar({ onSearch, styles, ...rest }: SearchBarProps) {
         keyboardType='web-search'
         returnKeyLabel='search'
         returnKeyType='search'
+        onSubmitEditing={onSubmit}
         style={[stylesheet.input, styles?.textInput]}
       />
       <TouchableOpacity
