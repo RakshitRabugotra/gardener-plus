@@ -127,6 +127,7 @@ const MainContent = ({
           style={[
             horizontal ? stylesheet.imageHorizontal : stylesheet.image,
             styles?.image,
+            !hasThumbnail && { borderRadius: 999 } 
           ]}
           source={
             hasThumbnail

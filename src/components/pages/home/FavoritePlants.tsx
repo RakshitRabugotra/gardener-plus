@@ -149,10 +149,11 @@ export const PlantCard = ({
 
   return (
     <ImageCard
-      {...rest}
+      fallbackSrc={rest.fallbackSrc}
       imageSrc={image}
       href={id && id >= 0 ? `/${id}` : href}
       styles={cardStyles}
+      {...rest}
     />
   )
 }

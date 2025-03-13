@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "gardener-plus",
+    "name": "Gardener Plus",
     "slug": "gardener-plus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./src/assets/images/logo.png",
     "scheme": "gardener",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,24 +12,23 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.rakshit413.gardenerplus",
-      "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.rakshit413.gardenerplus"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./src/assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-logo.png",
+          "image": "./src/assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
