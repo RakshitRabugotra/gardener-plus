@@ -4,7 +4,7 @@
     "slug": "gardener-plus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/icon.png",
+    "icon": "./src/assets/images/logo.png",
     "scheme": "gardener",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
